@@ -1,0 +1,25 @@
+{
+	"folders": [
+		{
+			"path": "../../../../Documents/Minecraft/Mods 1.19.4/ServerSync/ServerSync-master"
+		},
+		{
+			"path": "../../../../Documents/Minecraft/Mods 1.19.4/ServerSync/serversync-fabric-loader"
+		},
+		{
+			"path": "../../../../Documents/Minecraft/Mods 1.19.4/ServerSync/serversync-forge-loader-origional"
+		},
+		{
+			"path": "../../serversync-fabric-loader"
+		},
+		{
+			"path": "../../../../AppData/Roaming/.minecraft"
+		},
+		{
+			"path": ".."
+		}
+	],
+	"settings": {
+		"java.configuration.updateBuildConfiguration": "automatic"
+	}
+}

@@ -1,0 +1,6 @@
+{
+    "use_relative_paths" : true,
+    "mod_list_file": "data/mods/mod_list.json",
+    "download_dir": "data/mods/download",
+    "download_list_file": "data/download_list.txt"
+}

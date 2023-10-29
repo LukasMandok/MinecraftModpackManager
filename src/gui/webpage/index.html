@@ -1,0 +1,41 @@
+<html>
+    <head>
+        <title>Index</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" href="css/main.css">
+        <script type="text/javascript" src="/eel.js"></script> 
+    </head>
+    
+    <body>
+        <div class="topnav">
+            <a class="active" id="button-name">Home</a>
+            <a id="button-search">Search</a>
+        </div> 
+
+        <h1>Mod Search</h1>
+        <input type="text" id="search_input">
+        <button onclick="search()">Search</button>
+        <div id="search_container">
+            <!-- This is a template structure for a single result, replicate for each search result -->
+            <div class="search-item">
+                <img src="path_to_icon.png" alt="Mod Icon" class="mod-icon">
+                <div class="mod-info">
+                    <h2 class="mod-title">Mod Title Here</h2>
+                    <p class="mod-desc">Short description here...</p>
+                    <div class="mod-details">
+                        <span>Modloader: Fabric</span> <!-- or Forge etc. -->
+                        <span>Newest Version: 1.17</span>
+                        <span>Available on: Curseforge</span>
+                        <!-- Add more details as needed -->
+                    </div>
+                </div>
+            </div>
+            <!-- Repeat .result-item for each result -->
+        </div>        
+    </body>
+    
+    <script src="js/main.js"></script>
+    <script src="eel.js"></script>
+</html>
