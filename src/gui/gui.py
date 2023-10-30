@@ -17,7 +17,7 @@ class Application:
         self.manager = manager
 
     def close_callback(self, websockets, *args):
-        if not websockets:
+        if websockets == []:
             print('Exiting application!')
             exit()
 

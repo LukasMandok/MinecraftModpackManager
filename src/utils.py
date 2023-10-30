@@ -1,10 +1,22 @@
 import numpy as np
 from fuzzywuzzy import fuzz, process
 
+def custom_scorer(query, choice):
+    exact_match_bonus = 1000  # Some high value to ensure exact matches are prioritized
+    length_penalty = abs(len(query) - len(choice))
+
+    # Check for exact match
+    if query == choice:
+        return exact_match_bonus
+
+    score = fuzz.partial_ratio(query, choice) + fuzz.ratio(query, choice) - length_penalty
+    return score
+
+
 
 # get best match from search in a list:
 def best_match(name, titles, count = 1):
-    results = process.extractBests(name, titles, scorer=fuzz.partial_ratio, limit=count, score_cutoff=20)
+    results = process.extractBests(name, titles, scorer=custom_scorer, limit=count, score_cutoff=20)
     if len(results) == 0:
         return None
 

@@ -1,4 +1,9 @@
 // document.getElementById("button-search").addEventListener("click", ()=>{search()}, false);
+document.getElementById('search_input').addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        search();
+    }
+});
 
 // Exposed python functions
 function search() {
