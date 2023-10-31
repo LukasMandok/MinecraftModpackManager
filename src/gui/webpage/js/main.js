@@ -19,7 +19,7 @@ function createSearchItem(item) {
     resultItem.className = 'search-item';
 
     const modIcon = document.createElement('img');
-    modIcon.src = item.icon_url;
+    modIcon.src = item.icon;
     modIcon.className = 'mod-icon';
 
     const modInfo = document.createElement('div');
@@ -27,7 +27,7 @@ function createSearchItem(item) {
 
     const modTitle = document.createElement('h2');
     modTitle.className = 'mod-title';
-    modTitle.innerText = item.title;
+    modTitle.innerText = item.name;
 
     const modDesc = document.createElement('p');
     modDesc.className = 'mod-desc';
@@ -38,13 +38,13 @@ function createSearchItem(item) {
 
     // Add more span elements for each detail
     const modLoader = document.createElement('span');
-    modLoader.innerText = 'Modloader: ' + item.modloader;
+    modLoader.innerText = 'Modloader: ' + item.mod_loaders;
 
     const modVersion = document.createElement('span');
-    modVersion.innerText = 'Newest Version: ' + item.latest_version;
+    modVersion.innerText = 'Newest Version: ' + item.recent_version;
 
     const modPlatform = document.createElement('span');
-    modPlatform.innerText = 'Available on: ' + item.platform;
+    modPlatform.innerText = 'Available on: ' + item.source;
 
     modDetails.append(modLoader, modVersion, modPlatform);
     modInfo.append(modTitle, modDesc, modDetails);

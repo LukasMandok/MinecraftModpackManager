@@ -44,7 +44,12 @@ def get_projects(ids, debug = False):
     }
 
     url = "{api_url}/mods".format(api_url=API_URL)
-    return api.request(url, HEADERS, None, body, debug=debug)
+    result = api.request(url, HEADERS, None, body, debug=debug)
+    
+    if result is None:
+        return None
+    
+    return result["data"]
 
 # params:
 # gameId (int), classId (int), categoryId (int), categoryIds (string), gameVersion (string)

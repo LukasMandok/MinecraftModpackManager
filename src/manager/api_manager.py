@@ -8,6 +8,8 @@ from pprint import pprint
 from .. import utils
 from .. import config
 
+from ..types import formats
+
 class ApiManager:
     def __init__(self):
         pass
@@ -18,6 +20,7 @@ class ApiManager:
         ## process modrinth restults
         modrinth_search = m_api.search_mod(name, versions, loader)
 
+        modrinth = []
         if modrinth_search is not None:
             modrinth_titles = [item["title"] for item in modrinth_search]
             print("modrinth_titles: ", modrinth_titles)
@@ -29,6 +32,11 @@ class ApiManager:
             modrinth_ids = [item["project_id"] for item in modrinth_best_search]
             modrinth_projects = m_api.get_projects(modrinth_ids)
 
+            for project in modrinth_projects:
+                mod = formats.extract_modrinth_data(project)
+                modrinth.append(mod.to_dict())
+                
+
             print("best modrinth projects: ", [modrinth_titles[i] for i in indices])
 
         else:
@@ -37,7 +45,8 @@ class ApiManager:
         ## TODO: process curseforge results
         #curseforge = c_api.search_mod(name, versions, loader)
         curseforge_search = c_api.search_mod(name)
-            
+        
+        curseforge = []
         if curseforge_search is not None:
             curseforge_titles = [item["name"] for item in curseforge_search]
             print("curseforge_titles: ", curseforge_titles)
@@ -49,10 +58,15 @@ class ApiManager:
             curseforge_ids = [item["id"] for item in curseforge_best_search]
             curseforge_projects = c_api.get_projects(curseforge_ids)
 
+            pprint(curseforge_projects)
+
             print("best curseforge projects: ", [curseforge_titles[i] for i in indices])
 
+            for project in curseforge_projects:
+                mod = formats.extract_curseforge_data(project)
+                curseforge.append(mod.to_dict())
 
         # TODO:  find the best result from both
 
         # return the best result
-        return modrinth_projects
+        return curseforge
