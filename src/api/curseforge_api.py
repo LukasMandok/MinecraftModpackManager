@@ -6,10 +6,12 @@ from ..types.formats import *
 from ..types.constants import *
 
 from .base_api import BaseAPI
+from .high_level_api import HighLevelAPI
 
 
-class CurseForgeAPI(BaseAPI):
+class CurseForgeAPI(BaseAPI): #, HighLevelAPI
     def __init__(self):
+        self.name = "CurseForge API"
         self.api_url_search = "https://www.curseforge.com/api/v1"
 
         self.loader_types = {
@@ -21,6 +23,7 @@ class CurseForgeAPI(BaseAPI):
         }
 
         api_url = "https://api.curseforge.com/v1"
+        download_url = "https://api.curseforge.com/v1"
         api_key = "$2a$10$IGsBR6CXosB.y2eYiS6eQu7a6CCDKGDBeLOeqMcIeLnSCAJBOiAee"
         headers = {
             'Content-Type': 'application/json',
@@ -28,11 +31,19 @@ class CurseForgeAPI(BaseAPI):
             'x-api-key': api_key
         }
 
-        super().__init__(api_url, headers)
+        super().__init__(api_url, download_url, headers)
+
+        #BaseAPI.__init__(self, api_url, download_url, headers)
+        # TODO: I am not sure if this implementation if ok
+        #HighLevelAPI.__init__(self, self)
         
     ### Declare Class specific variables
+    @property
     def name_tag(self): return "name"
+    @property
     def id_tag(self): return "id"
+    @property
+    def search_id_tag(self): return "id"
 
     ### General API Access
 
@@ -121,7 +132,56 @@ class CurseForgeAPI(BaseAPI):
 
         results = self.search_project(params)	
 
-        if len(results["data"]) == 0:
+        if not "data" in results or len(results["data"]) == 0:
             return None
 
         return results["data"]
+
+
+    # extract data from a project
+    
+    @staticmethod
+    def extract_data(data):
+        source      = Sources.CURSEFORGE  # Assuming CURSEFORGE is a constant you've defined
+        id          = data['id']
+        name        = data['name']
+        slug        = data['slug']
+        description = data['summary']
+        color       = None
+
+        categories  = [category['name'] for category in data['categories']]
+
+        # Extracting authors
+        author      = [author['name'] for author in data['authors']]
+        updated     = data['dateModified']
+        icon        = data['logo']['url'] if 'logo' in data and data['logo'] else None
+        downloads   = data['downloadCount']
+        
+        # Creating the Mod object
+        mod = Mod(source, id, name, slug, description, categories, author, updated, icon, downloads, color)
+
+        # Extracting additional details
+        mod.add_details(
+            # TODO: add mod_loader from gameVersions or latestFilesIndexes (sometimes missing) + need to be converted
+            mod_loaders    = data['latestFilesIndexes'][0]['modLoader'] if data['latestFilesIndexes'] and 'modLoader' in data['latestFilesIndexes'][0] else None,
+            recent_version = data['latestFilesIndexes'][0]['gameVersion'] if data['latestFilesIndexes'] and 'gameVersion' in data['latestFilesIndexes'][0] else None,
+            client_side    = None, 
+            server_side    = data['latestFiles'][0]['isServerPack'] if data['latestFiles'] and 'isServerPack' in data['latestFiles'][0] else None,
+        )
+
+        mod.add_links(
+            source   = data.get('sourceUrl', None),
+            website  = data.get('websiteUrl', None),
+            issues   = data.get('issuesUrl', None),
+            wiki     = data.get('wikiUrl', None),
+            donation = None
+        )
+
+        for screenshot in data['screenshots']:
+            mod.add_screenshot(
+                url   = screenshot['url'],
+                title = screenshot['title'],
+                desc  = screenshot['description']
+            )
+
+        return mod

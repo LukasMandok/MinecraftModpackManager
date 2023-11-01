@@ -9,8 +9,6 @@ class BaseAPI(ABC):
         self.download_url = download_url
         self.headers = headers
         
-        self.name_tag = None
-        
     ### General access
 
     def request(self, sub_url, params = None, data = None, debug = False, custom_url = None):
@@ -33,13 +31,17 @@ class BaseAPI(ABC):
     
     # ### Declare Child Class specific variables
     
-    # @property 
-    # @abstractmethod
-    # def name_tag(self): pass
+    @property 
+    @abstractmethod
+    def name_tag(self): pass
     
-    # @property
-    # @abstractmethod
-    # def id_tag(self): pass
+    @property
+    @abstractmethod
+    def id_tag(self): pass
+    
+    @property
+    @abstractmethod
+    def search_id_tag(self): pass
     
         
     ### Client specific access - templates:

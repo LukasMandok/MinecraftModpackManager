@@ -1,40 +1,75 @@
 from .base_api import BaseAPI
 
 from .. import utils
+from ..types import formats
 
 class HighLevelAPI():
     def __init__(self, api):
         self.api = api
     
     # redirect all requests, that are not implemented in this class to the api
-    # def __getattr__(self, method):
-    #     return getattr(self.api, method)
+    def __getattr__(self, method):
+        print("redirecting to api: ", method)
+        return getattr(self.api, method)
+        
         
     ### Specific access
     
-    def get_search_results(self, name, versions, loader, count = 5):
-
-        search_results = self.search_mod(name, versions, loader)
+    def get_best_results_by_score(self, search_results, name, count = 5):
+        # get the titles of the results
+        titles = [item[self.api.name_tag] for item in search_results]
         
-        results = []
-        if search_results is not None:
-            # get the titles of the results
-            titles = [item[self.name_tag] for item in search_results]
-            print("titles: ", titles)
+        # get the best matches
+        indices, scores = utils.best_match(name, titles, count)
+        print("- indices : ", indices, "\n- scores : ", scores)
+        
+        # get list with best results from indices
+        best_search = [search_results[index] for index in indices]
+        
+        print("best projects: ", [titles[i] for i in indices])
+        
+        return best_search, titles, indices, scores
+    
+    
+    def retrieve_project_details(self, search_results):
+        # get project ids from search results
+        ids = [item[self.search_id_tag] for item in search_results]
+        
+        # make api request to retrieve mod details
+        projects = self.api.get_projects(ids)
+        
+        # sort projects, if retrieved in wrong order
+        ids_unsorted = [project[self.id_tag] for project in projects]
+        sorted_projects = projects
+        if ids != ids_unsorted:
+            #print("projects in worng order - sorting ...")
+            sorting = [ids_unsorted.index(id) for id in ids]
+            sorted_projects = [projects[index] for index in sorting]
+        
+        return sorted_projects
+    
+    
+    def convert_projects_to_mods(self, projects):
+        mods = []
+        for project in projects:
+            # use api's extraction function to convert project to mod format
+            mod = self.api.extract_data(project)
+            mods.append(mod.to_dict())
             
-            # get the best matches
-            indices, scores = utils.best_match(name, titles, count)
-            print("index: ", indices, scores)
-            best_search = [search_results[index] for index in indices]
-
-            ids = [item[self.id_tag] for item in best_search]
-            projects = self.get_projects(ids)
-
-            for project in projects:
-                mod = formats.extract_modrinth_data(project)
-                results.append(mod.to_dict())
-                
-            print("best projects: ", [titles[i] for i in indices])
-
-        else:
+        return mods
+    
+    
+    def get_best_mods_search(self, name, versions, loader, count = 5):
+        search_results = self.api.search_mod(name, versions, loader)
+        
+        if search_results is None:
             print("No results found")
+            return None
+        
+        best_search, *_ = self.get_best_results_by_score(search_results, name, count)
+        
+        best_projects = self.retrieve_project_details(best_search)
+        
+        mods = self.convert_projects_to_mods(best_projects)
+            
+        return mods

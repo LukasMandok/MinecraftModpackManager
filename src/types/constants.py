@@ -11,4 +11,13 @@ class Modloader(Enum):
 class Sources(Enum):
     MODRINTH = "modrinth"
     CURSEFORGE = "curseforge"
-    UNKNOWN = "unknown"
+    UNKNOWN = "unknown"   
+    
+    @classmethod
+    def get_valid_source(cls, source):
+        if source in cls._value2member_map_:
+            return cls(source)
+        elif source in cls._value2member_map_.values():
+            return source
+        else:
+            return None

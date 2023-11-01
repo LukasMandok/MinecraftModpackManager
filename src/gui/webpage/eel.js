@@ -14,7 +14,8 @@ function search() {
 
     console.log("Input: " + input)
     
-    eel.search_project(input)(handleSearchResults)
+    eel.search_mod(input, "modrinth")(handleSearchResults)
+    eel.search_mod(input, "curseforge")(handleSearchResults)
 }
 
 

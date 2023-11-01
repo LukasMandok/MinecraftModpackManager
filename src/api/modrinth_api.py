@@ -6,10 +6,13 @@ from ..types.formats import *
 from ..types.constants import *
 
 from .base_api import BaseAPI
+from .high_level_api import HighLevelAPI
 
 
-class ModrinthAPI(BaseAPI):
+class ModrinthAPI(BaseAPI): #, HighLevelAPI
     def __init__(self):
+        self.name = "Modrinth API"
+        
         user_agent = "LukasMandok/MinecraftModpackManager/0.1.0_dev (mrdevilsthumb@gmail.com)"
 
         api_url = "https://api.modrinth.com/v2"
@@ -19,10 +22,18 @@ class ModrinthAPI(BaseAPI):
         }
 
         super().__init__(api_url, download_url, headers)
+
+        # BaseAPI.__init__(self, api_url, download_url, headers)
+        # TODO: No idea, if this allowed to do.
+        # HighLevelAPI.__init__(self, self)
         
     ### Declare Class specific variables
+    @property
     def name_tag(self): return "title"
-    def id_tag(self): return "project_id"
+    @property
+    def id_tag(self): return "id"
+    @property
+    def search_id_tag(self): return "project_id"
 
     ### General API Access
 
@@ -80,8 +91,10 @@ class ModrinthAPI(BaseAPI):
             "limit" : count,
             "index" : "relevance",
             "offset" : 0,
-            "facets" : [[ "project_type : mod" ]]
         }
+        
+        # project type to mod
+        facets = [[ "project_type : mod" ]]        
         
         # if version is a list, iterate over entries, create a list like this: versions=["versions:1.16.5", "versions:1.19.3"]
         versions = []
@@ -92,7 +105,7 @@ class ModrinthAPI(BaseAPI):
             else:
                 versions.append(f"versions:{version}")
                 
-            params["facets"].append(versions)
+            facets.append(versions)
 
         #do the same for modloader:
         
@@ -104,9 +117,11 @@ class ModrinthAPI(BaseAPI):
             else:
                 modloaders.append(f"categories:{modloader}")
                 
-            params["facets"].append(modloaders)
+            facets.append(modloaders)
         
         print("name:", name)
+        
+        params["facets"] = json.dumps(facets)
 
         results = self.search_project(params, debug = debug)
 
@@ -115,5 +130,53 @@ class ModrinthAPI(BaseAPI):
         
         return results["hits"]
 
+    @staticmethod
+    def extract_data(data):
+        source      = Sources.MODRINTH 
+        id          = data['id']
+        name        = data['title']
+        slug        = data['slug']
+        description = data['description']
+        categories  = data['categories']
+
+        # Assuming 'team' refers to the author. 
+        author      = data['team']
+        updated     = data['updated']
+        icon        = data['icon_url']
+        downloads   = data['downloads']
+        color       = data.get('color', None)
+
+        mod = Mod(source, id, name, slug, description, categories, author, updated, icon, downloads, color)
+                
+        # Initializing additional details if available in the data
+
+
+        mod.add_details(
+            mod_loaders    = data.get('loaders', []),
+            recent_version = data['game_versions'][0] if data['game_versions'] else None,
+            client_side    = data.get('client_side', None),
+            server_side    = data.get('server_side', None)
+        )
+
+        mod.add_links(
+            source   = data.get('source_url', None),
+            website  = None,
+            issues   = data.get('issues_url', None),
+            wiki     = data.get('wiki_url', None),
+            donation = data['donation_urls'][0] if data['donation_urls'] else None
+        )
+
+        mod.add_long_desc(
+            data['body']
+        )
+
+        for screenshot in data['gallery']:
+            mod.add_screenshot(
+                url   = screenshot['url'],
+                title = screenshot['title'],
+                desc  = screenshot['description']
+            )
+
+        return mod
 
 

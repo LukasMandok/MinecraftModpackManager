@@ -1,5 +1,5 @@
-import numpy as np
 from fuzzywuzzy import fuzz, process
+
 
 def custom_scorer(query, choice):
     exact_match_bonus = 1000  # Some high value to ensure exact matches are prioritized
@@ -9,7 +9,8 @@ def custom_scorer(query, choice):
     if query == choice:
         return exact_match_bonus
 
-    score = fuzz.partial_ratio(query, choice) + fuzz.ratio(query, choice) - length_penalty
+    # + fuzz.ratio(query, choice) 
+    score = fuzz.partial_ratio(query, choice) - length_penalty * 0.1
     return score
 
 

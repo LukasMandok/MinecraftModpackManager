@@ -1,7 +1,8 @@
+from typing import overload
 import eel
 import os
 
-from ..manager.application_manager import ApplicationManager
+from ..types.constants import Sources
 
 class Application:
     def __init__(self):
@@ -29,9 +30,20 @@ class Application:
             raise ValueError("Manager not set!")
 
         self.eel.init(self.html_dir)
-        self.eel.expose(self.search_project)
+        self.eel.expose(self.search_mod)
         self.eel.start(self.html_file, size=(500, 500), mode='firefox', close_callback=self.close_callback)
-
-    def search_project(self, name):
-        #self.eel.prompt_alerts("Searching for project: " + name)
-        return self.manager.search_project(name)
+    
+    # @overload
+    # def search_mod(self, name: str):
+    #     #self.eel.prompt_alerts("Searching for project: " + name)
+    #     return self.manager.search_mod(name)
+    
+    # @overload
+    def search_mod(self, name: str, source: str):
+        
+        source_enum = Sources.get_valid_source(source)   
+        if source_enum is None:
+            raise ValueError("Invalid source: " + source)     
+        
+        return self.manager.search_mod(name, source = source_enum)
+    
