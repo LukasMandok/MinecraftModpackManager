@@ -13,7 +13,6 @@ def custom_scorer(query, choice):
     return score
 
 
-
 # get best match from search in a list:
 def best_match(name, titles, count = 1):
     results = process.extractBests(name, titles, scorer=custom_scorer, limit=count, score_cutoff=20)
