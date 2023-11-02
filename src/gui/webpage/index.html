@@ -15,26 +15,102 @@
         </div> 
 
         <h1>Mod Search</h1>
-        <input type="text" id="search_input" value="Spiders 2.0"> 
-        <button onclick="search()">Search</button>
-        <div id="search_container">
-            <!-- This is a template structure for a single result, replicate for each search result -->
-            <div class="search-item">
-                <img src="path_to_icon.png" alt="Mod Icon" class="mod-icon">
-                <div class="mod-info">
-                    <h2 class="mod-title">Mod Title Here</h2>
-                    <p class="mod-desc">Short description here...</p>
-                    <div class="mod-details">
-                        <span>Modloader: Fabric</span> <!-- or Forge etc. -->
-                        <span>Newest Version: 1.17</span>
-                        <span>Available on: Curseforge</span>
-                        <!-- Add more details as needed -->
+
+        <div id="search-actions">
+            <!-- Search bar -->
+            <div id="search-bar">
+                <input type="text" id="search-input" value="Spiders 2.0"> 
+                <button onclick="search()">Search</button>
+            </div>
+
+            <!-- Search Filters -->
+            <div id="filter-bar">
+                <!-- <div class="filter-options" id="filter-options1"></div>
+                    <div class="filter-dropdown">
+                        <button class="filter-dropdown-button">Select Options</button>
+                        <div class="filter-dropdown-content">
+                            <label class="filter-label" for="filter-options1-1">
+                                <input type="checkbox" id="filter-options1-1"> Option 1
+                            </label>
+                            <label class="filter-label" for="filter-options1-2">
+                                <input type="checkbox" id="filter-options1-2"> Option 2
+                            </label>
+                            <label class="filter-label" for="filter-options1-3">
+                                <input type="checkbox" id="filter-options1-3"> Option 3
+                            </label>
+                            <label class="filter-label" for="filter-options1-4">
+                                <input type="checkbox" id="filter-options1-4"> Option 4
+                            </label>
+                        </div>
+                    </div>
+                    <div class="filter-selected-options" id="filter-selected-options1">
+            
                     </div>
                 </div>
-            </div>
-            <!-- Repeat .result-item for each result -->
-        </div>      
-        <div>
+
+                <div class="filter-options" id="filter-options2"></div>
+                    <div class="filter-dropdown">
+                        <button class="filter-dropdown-button">Select Options</button>
+                        <div class="filter-dropdown-content">
+                            <label class="filter-label" for="filter-options2-1">
+                                <input type="checkbox" id="filter-options2-1"> Option 1
+                            </label>
+                            <label class="filter-label" for="filter-options2-2">
+                                <input type="checkbox" id="filter-options2-2"> Option 2
+                            </label>
+                            <label class="filter-label" for="filter-options2-3">
+                                <input type="checkbox" id="filter-options2-3"> Option 3
+                            </label>
+                            <label class="filter-label" for="filter-options2-4">
+                                <input type="checkbox" id="filter-options2-4"> Option 4
+                            </label>
+                        </div>
+                    </div>
+                    <div class="filter-selected-options" id="filter-selected-options2">
+                        
+                    </div>
+                </div> -->
+            </div>                  
+        </div>
+
+        <!-- Search results -->
+        <div class="search-results-container">
+            <div class="search-container" id="search-container-1">
+                <!-- This is a template structure for a single result, replicate for each search result -->
+                <div class="search-item">
+                    <img src="path_to_icon.png" alt="Mod Icon" class="mod-icon">
+                    <div class="mod-info">
+                        <h2 class="mod-title">Mod Title Here</h2>
+                        <p class="mod-desc">Short description here...</p>
+                        <div class="mod-details">
+                            <span>Modloader: Fabric</span> <!-- or Forge etc. -->
+                            <span>Newest Version: 1.17</span>
+                            <span>Available on: Curseforge</span>
+                            <!-- Add more details as needed -->
+                        </div>
+                    </div>
+                </div>
+                <!-- Repeat .result-item for each result -->
+            </div>      
+            <div class="search-container" id="search-container-2">
+                <!-- This is a template structure for a single result, replicate for each search result -->
+                <div class="search-item">
+                    <img src="path_to_icon.png" alt="Mod Icon" class="mod-icon">
+                    <div class="mod-info">
+                        <h2 class="mod-title">Mod Title Here</h2>
+                        <p class="mod-desc">This is a much longer description as the other one has. So I want to make it flow over. Which is kind of not implemented yet.</p>
+                        <div class="mod-details">
+                            <span>Modloader: Fabric</span> <!-- or Forge etc. -->
+                            <span>Newest Version: 1.17</span>
+                            <span>Available on: Curseforge</span>
+                            <!-- Add more details as needed -->
+                        </div>
+                    </div>
+                </div>
+                <!-- Repeat .result-item for each result -->
+            </div>      
+        </div>
+        <div style="width: 100px;">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true" data-v-693a4de1=""><circle cx="12" cy="12" r="10"></circle><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
             
             <svg xml:space="preserve" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="1.5" clip-rule="evenodd" viewBox="0 0 24 24">

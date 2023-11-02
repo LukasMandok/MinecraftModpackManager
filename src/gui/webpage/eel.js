@@ -1,5 +1,5 @@
 // document.getElementById("button-search").addEventListener("click", ()=>{search()}, false);
-document.getElementById('search_input').addEventListener('keydown', function(event) {
+document.getElementById('search-input').addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
         search();
     }
@@ -7,17 +7,21 @@ document.getElementById('search_input').addEventListener('keydown', function(eve
 
 // Exposed python functions
 function search() {
-    console.log('searching');
-    var input = document.getElementById('search_input').value;
-    var results = document.getElementById('search_container');
+    var input = document.getElementById('search-input').value;
+    var results = document.getElementById('search-container-1');
     results.innerHTML = '';
-
-    console.log("Input: " + input)
+    var results = document.getElementById('search-container-2');
+    results.innerHTML = '';
     
-    eel.search_mod(input, "modrinth")(handleSearchResults)
-    eel.search_mod(input, "curseforge")(handleSearchResults)
+    // eel.search_mod(input, "modrinth")(handleSearchResults)
+    eel.search_mod(input, "modrinth")((results) => handleSearchResults(results, 1));
+    // eel.search_mod(input, "curseforge")(handleSearchResults)
+    eel.search_mod(input, "curseforge")((results) => handleSearchResults(results, 2));
 }
 
+
+create_filter(["Filter1_Option1", "Filter1_Option2", "Filter1_Option3"])
+create_filter(["Filter2_Option1", "Filter2_Option2", "Filter2_Option3", "Filter2_Option4"])
 
 
 // Exposed javascript functions
