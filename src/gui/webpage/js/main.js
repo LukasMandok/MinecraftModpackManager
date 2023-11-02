@@ -57,10 +57,10 @@ function createSearchItem(item, container = 1) {
     searchContainer.appendChild(searchItem);
 }
 
-// Rezise Search-Item Height
+// equalize Search Results Layout
 function equalizeLayout() {
-    console.log("load event.")
-    //const searchItems = document.getElementsByClassName('search-item');
+
+    // Rezise Search-Item Height
     const searchItems = document.querySelectorAll('.search-item');
     
     let maxHeight = 0;
@@ -76,9 +76,28 @@ function equalizeLayout() {
     searchItems.forEach(item => {
         item.style.height = `${maxHeight}px`;
     });
+
+    // Equalize Search-Container Max Width
+    // const searchContainers = document.querySelectorAll('.search-container');
+
+    // let maxWidth = 0;
+    // searchContainers.forEach(container => {
+    //     // Get the computed style of the container
+    //     const maxWidthValue = parseFloat(window.getComputedStyle(container).getPropertyValue('max-width'));
+
+    //     console.log(maxWidthValue);
+
+    //     if (maxWidthValue > maxWidth) {
+    //         maxWidth = maxWidthValue;
+    //     }
+    // });
+
+    // searchContainers.forEach(container => {
+    //     container.style.maxWidth = `${maxWidth}px`;
+    // });
 }
 
-const selectedOptionsMap = {};
+
 
 // Filter Options
 function create_filter(filter_list) {
