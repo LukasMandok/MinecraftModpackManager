@@ -1,0 +1,93 @@
+
+
+{
+    "id": "AABBCCDD",
+
+    "title": "My Project",
+    "slug": "my_project",
+
+    "issues_url": "https://github.com/my_user/my_project/issues",
+    "source_url": "https://github.com/my_user/my_project",
+    "wiki_url": "https://github.com/my_user/my_project/wiki",
+    "discord_url": "https://discord.gg/AaBbCcDd",
+    "donation_urls": [
+        {
+        "id": "patreon",
+        "platform": "Patreon",
+        "url": "https://www.patreon.com/my_user"
+        }
+    ],
+
+    "description": "A short description",
+    "categories": [
+        "technology",
+        "adventure",
+        "fabric"
+    ],
+
+
+
+
+
+
+
+
+
+
+    "status": "approved",
+    "downloads": 0,
+    
+    "client_side": "required",
+    "server_side": "optional",
+    "body": "A long body describing my project in detail",
+    "requested_status": "approved",
+    "additional_categories": [
+        "technology",
+        "adventure",
+        "fabric"
+    ],
+
+    "project_type": "mod",
+    "icon_url": "https://cdn.modrinth.com/data/AABBCCDD/b46513nd83hb4792a9a0e1fn28fgi6090c1842639.png",
+    "color": 8703084,
+    "thread_id": "TTUUVVWW",
+    "monetization_status": "monetized",
+    "team": "MMNNOOPP",
+    "body_url": null,
+    "moderator_message": null,
+    "published": "string",
+    "updated": "string",
+    "approved": "string",
+    "queued": "string",
+    "followers": 0,
+    "license": {
+        "id": "LGPL-3.0-or-later",
+        "name": "GNU Lesser General Public License v3 or later",
+        "url": "string"
+    },
+    "versions": [
+        "IIJJKKLL",
+        "QQRRSSTT"
+    ],
+    "game_versions": [
+        "1.19",
+        "1.19.1",
+        "1.19.2",
+        "1.19.3"
+    ],
+    "loaders": [
+        "forge",
+        "fabric",
+        "quilt"
+    ],
+    "gallery": [
+        {
+        "url": "https://cdn.modrinth.com/data/AABBCCDD/images/009b7d8d6e8bf04968a29421117c59b3efe2351a.png",
+        "featured": true,
+        "title": "My awesome screenshot!",
+        "description": "This awesome screenshot shows all of the blocks in my mod!",
+        "created": "string",
+        "ordering": 0
+        }
+    ]
+}

@@ -1,0 +1,36 @@
+Structure of the Downloads:
+
+ModLoader/Version/Architecture/Categroy/SubCatebtories/File
+
+e.g.: Forge/1.19.4/both/Content/Visual/ModName.jar
+
+
+
+Mod.json (Modlist)
+
+type (mods / texturepacks / resourcepacks / shaders):
+    name
+    architecture
+    category
+    subcategories
+    description
+    versions (after 1.19)
+        mod_loader (forge / fabri / quilt )
+    modified_date
+    access_date
+
+    provider (modrinth / curseforge / github )
+        info_url
+        download_url
+        id        
+    used_version
+    usedmodLoader
+    downloaded
+        version
+            mod_loader
+                download_name
+                provider
+    dependencies (modlist)
+    not_compatible (mod list)
+    
+
