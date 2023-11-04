@@ -2,8 +2,8 @@
 import json
 
 # packages
-from ..types.formats import *
-from ..types.constants import *
+from ..models.formats import *
+from ..models.constants import *
 
 from .base_api import BaseAPI
 from .high_level_api import HighLevelAPI
@@ -47,21 +47,6 @@ class CurseForgeAPI(BaseAPI): #, HighLevelAPI
 
     ### General API Access
 
-    # get all games on curseforge
-    def get_games(self, debug = False):
-        sub_url = f"/games"
-
-        return self.request(sub_url, debug = debug)
-
-
-    # get all categories for a game on curseforge
-    def get_categories(self, gameId = 432, debug = False):
-        sub_url = f"/categories"
-
-        params = {"gameId" : gameId}
-        
-        return self.request(sub_url, params, debug = debug)
-
 
     # get project details from a project id
     def get_project(self, id, debug = False):
@@ -97,15 +82,37 @@ class CurseForgeAPI(BaseAPI): #, HighLevelAPI
         return self.request(sub_url, params, custom_url = self.api_url_search, debug = debug)
 
 
-    ### Specific access:
-
     # help functions
     def get_modloader_type(self, name):
         return self.loaders[name]
+    
+    ### Specific access (specifically available for this api)
+    
+        # get all games on curseforge
+    def get_games(self, debug = False):
+        sub_url = f"/games"
+
+        return self.request(sub_url, debug = debug)
+
+
+    # get all categories for a game on curseforge
+    def get_categories(self, gameId = 432, debug = False):
+        sub_url = f"/categories"
+
+        params = {"gameId" : gameId}
+        
+        return self.request(sub_url, params, debug = debug)
+    
+    
+    
+    ### More complex, api specific functions
+    
+    def add_missing_project_info(self, project):
+        return project
 
 
     # search for a mod
-    def search_mod(self, name, version = None, modloader = None, count = 50, debug = False):
+    def get_mod_search_results(self, name, version = None, modloader = None, count = 50, debug = False):
         params = {
             "filterText" : name,
             "gameId" : 432, # Minecraft
@@ -152,16 +159,16 @@ class CurseForgeAPI(BaseAPI): #, HighLevelAPI
         categories  = [category['name'] for category in data['categories']]
 
         # Extracting authors
-        author      = [author['name'] for author in data['authors']]
+        authors     = [author['name'] for author in data['authors']]
         updated     = data['dateModified']
         icon        = data['logo']['url'] if 'logo' in data and data['logo'] else None
         downloads   = data['downloadCount']
         
         # Creating the Mod object
-        mod = Mod(source, id, name, slug, description, categories, author, updated, icon, downloads, color)
+        mod_info = SourceModInfo(source, id, name, slug, description, categories, authors, updated, icon, downloads, color)
 
         # Extracting additional details
-        mod.add_details(
+        mod_info.add_details(
             # TODO: add mod_loader from gameVersions or latestFilesIndexes (sometimes missing) + need to be converted
             mod_loaders    = data['latestFilesIndexes'][0]['modLoader'] if data['latestFilesIndexes'] and 'modLoader' in data['latestFilesIndexes'][0] else None,
             recent_version = data['latestFilesIndexes'][0]['gameVersion'] if data['latestFilesIndexes'] and 'gameVersion' in data['latestFilesIndexes'][0] else None,
@@ -169,7 +176,7 @@ class CurseForgeAPI(BaseAPI): #, HighLevelAPI
             server_side    = data['latestFiles'][0]['isServerPack'] if data['latestFiles'] and 'isServerPack' in data['latestFiles'][0] else None,
         )
 
-        mod.add_links(
+        mod_info.add_links(
             source   = data.get('sourceUrl', None),
             website  = data.get('websiteUrl', None),
             issues   = data.get('issuesUrl', None),
@@ -178,10 +185,10 @@ class CurseForgeAPI(BaseAPI): #, HighLevelAPI
         )
 
         for screenshot in data['screenshots']:
-            mod.add_screenshot(
+            mod_info.add_screenshot(
                 url   = screenshot['url'],
                 title = screenshot['title'],
                 desc  = screenshot['description']
             )
 
-        return mod
+        return mod_info

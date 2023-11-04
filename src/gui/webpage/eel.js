@@ -13,13 +13,13 @@ function search() {
     var results = document.getElementById('search-container-2');
     results.innerHTML = '';
     
-    // eel.search_mod(input, "modrinth")(handleSearchResults)
-    eel.search_mod(input, "modrinth")((results) => handleSearchResults(results, 1));
-    // eel.search_mod(input, "curseforge")(handleSearchResults)
-    eel.search_mod(input, "curseforge")((results) => handleSearchResults(results, 2));
+    // eel.get_mod_search_results(input, "modrinth")(handleSearchResults)
+    eel.get_mod_search_results(input, "modrinth")((results) => handleSearchResults(results, 1));
+    // eel.get_mod_search_results(input, "curseforge")(handleSearchResults)
+    eel.get_mod_search_results(input, "curseforge")((results) => handleSearchResults(results, 2));
 }
 
-
+// TODO: dynamically create the search filters from websites
 create_filter(["Filter1_Option1", "Filter1_Option2", "Filter1_Option3"])
 create_filter(["Filter2_Option1", "Filter2_Option2", "Filter2_Option3", "Filter2_Option4"])
 

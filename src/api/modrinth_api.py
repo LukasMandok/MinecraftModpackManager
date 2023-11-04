@@ -2,8 +2,8 @@
 import json
 
 # packages
-from ..types.formats import *
-from ..types.constants import *
+from ..models.formats import *
+from ..models.constants import *
 
 from .base_api import BaseAPI
 from .high_level_api import HighLevelAPI
@@ -52,11 +52,22 @@ class ModrinthAPI(BaseAPI): #, HighLevelAPI
         params = {"ids" : json.dumps(project_ids)}
 
         return self.request(sub_url, params, debug = debug)
+        
+        
+    # search for a project 
+    def search_project(self, params, debug = False):
+        # create the request url including facets:
+        sub_url = "/search"
 
-
+        return self.request(sub_url, params, debug = debug)
+    
+    
+    
+    ### Specific access (specifically available for this api)
+    
     # get mod versions:
     def get_project_versions(self, project, debug = False):
-        sub_url = f"/projects/{project}/version"
+        sub_url = f"/project/{project}/version"
 
         return self.request(sub_url, debug = debug)
 
@@ -73,18 +84,40 @@ class ModrinthAPI(BaseAPI): #, HighLevelAPI
         params = {"ids" : json.dumps(version_ids)}
 
         return self.request(sub_url, params, debug = debug)
-        
-    # search for a project 
-    def search_project(self, params, debug = False):
-        # create the request url including facets:
-        sub_url = "/search"
-
-        return self.request(sub_url, params, debug = debug)
     
-    ### Specific access
-
+    # get members from a team
+    def get_project_team(self, project, debug = False):
+        sub_url = f"/project/{project}/members"
+        
+        return self.request(sub_url, debug = debug)
+    
+    
+    
+    ### More complex, api specific functions
+    
+    def add_missing_project_info(self, project):
+        # add authors:
+        # FIXME: removed since it is slow
+        #team = self.get_project_team(project["id"])
+        ##names = [member["user"]["name"] or member["user"]["username"] for member in team]
+        #names = [member["user"]["username"] for member in team]
+        #project["authors"] = names
+        project["authors"] = project["team"]
+        
+        # add recent version - this takes too long
+        # versions = self.get_project_versions(project["id"])
+        # project["recent_version"] = versions[0]["game_versions"][-1]        
+        
+        # add recent version 
+        versions = project["game_versions"]
+        recent_version = GameVersion.find_latest(versions)
+        print("recent version:", recent_version)
+        project["recent_version"] = str(recent_version)
+        
+        return project
+        
     # search for a mod
-    def search_mod(self, name, version = None, modloader = None, count = 20, debug = False):
+    def get_mod_search_results(self, name, version = None, modloader = None, count = 20, debug = False):
         
         params = {
             "query" : name,
@@ -140,25 +173,25 @@ class ModrinthAPI(BaseAPI): #, HighLevelAPI
         categories  = data['categories']
 
         # Assuming 'team' refers to the author. 
-        author      = data['team']
+        authors     = data['authors']
         updated     = data['updated']
         icon        = data['icon_url']
         downloads   = data['downloads']
         color       = data.get('color', None)
 
-        mod = Mod(source, id, name, slug, description, categories, author, updated, icon, downloads, color)
+        mod_info = SourceModInfo(source, id, name, slug, description, categories, authors, updated, icon, downloads, color)
                 
         # Initializing additional details if available in the data
 
 
-        mod.add_details(
+        mod_info.add_details(
             mod_loaders    = data.get('loaders', []),
-            recent_version = data['game_versions'][0] if data['game_versions'] else None,
+            recent_version = data.get("recent_version", None),
             client_side    = data.get('client_side', None),
             server_side    = data.get('server_side', None)
         )
 
-        mod.add_links(
+        mod_info.add_links(
             source   = data.get('source_url', None),
             website  = None,
             issues   = data.get('issues_url', None),
@@ -166,17 +199,17 @@ class ModrinthAPI(BaseAPI): #, HighLevelAPI
             donation = data['donation_urls'][0] if data['donation_urls'] else None
         )
 
-        mod.add_long_desc(
+        mod_info.add_long_desc(
             data['body']
         )
 
         for screenshot in data['gallery']:
-            mod.add_screenshot(
+            mod_info.add_screenshot(
                 url   = screenshot['url'],
                 title = screenshot['title'],
                 desc  = screenshot['description']
             )
 
-        return mod
+        return mod_info
 
 

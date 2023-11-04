@@ -19,7 +19,7 @@ class BaseAPI(ABC):
             response = requests.get(url, params = params, headers = self.headers)
         else:
             if debug: print("POST request: ", url, "\n\tParams: ", params, "\n\tData: ", data)
-            response = requests.post(url, params = params, data = json.dumps(data), headers = self.headers)
+            response = requests.post(url, params = params, data = json.dumps(data, default=str), headers = self.headers)
 
         if debug: print("\tResponse: ", response.json())
 
@@ -59,7 +59,11 @@ class BaseAPI(ABC):
         pass
     
     @abstractmethod
-    def search_mod(self, name, version = None, modloader = None, count = 20, debug = False):
+    def get_mod_search_results(self, name, version = None, modloader = None, count = 20, debug = False):
+        pass
+    
+    @abstractmethod
+    def add_missing_project_info(self, project):
         pass
         
         

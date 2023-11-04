@@ -1,10 +1,21 @@
 # import modrinth api for testing purposes
-from source.api import m_api
+from src.manager import application_manager
+from src import utils
+
+from src.models.formats import GameVersion
 
 
 if __name__ == '__main__':
-    import sys
-    name = sys.argv[1]
-    versions = sys.argv[2].split(',')
-    loader = sys.argv[3].split(',')
-    print(m_api.search_mod(name, versions, loader))
+    # test_score = utils.custom_scorer("the aether", "the Aether II")
+    # print("testscore: ", test_score)
+    
+    manager = application_manager.ApplicationManager()
+    score = manager.apiManager.retrieve_mod("Lihium")
+    print("comparison score", score)
+    
+    # version = GameVersion("1.19.4")
+    # dict = {version : "test"}
+    # print(dict["1.19.4"])
+    # print("version1: ", "1.19.4" == version)
+    # print("version2: ", version == "1.19.4")
+    

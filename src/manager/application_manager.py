@@ -1,6 +1,6 @@
 from . import api_manager, data_manager, download_manager, project_manager
 
-from ..types.constants import Sources
+from ..models.constants import Sources
 
 import json
 
@@ -11,13 +11,15 @@ class ApplicationManager:
         self.projectManager = project_manager.ProjectManager()
         self.downloadManager = download_manager.DownloadManager()
 
-    def search_mod(self, name, source = Sources.UNKNOWN):
+    def get_mod_search_results(self, name, source = Sources.UNKNOWN):
         # first look in the local data
-        result = self.dataManager.find_mod(name)
+        mods = self.dataManager.find_mod(name)
 
         # if not found, search the api
-        if result is None:
-            result = self.apiManager.search_mod(name, source = source)
+        if mods is None:
+            mods = self.apiManager.get_mod_search_results(name, source = source)
 
+        mods_dict = mods.to_dict()
+        
         # return result into json
-        return json.dumps(result)
+        return json.dumps(mods_dict, default=str)
