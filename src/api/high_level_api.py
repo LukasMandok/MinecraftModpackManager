@@ -79,6 +79,7 @@ class HighLevelAPI():
         mod_list, score_list = self.get_best_mods_search(name, versions=None, loader=None, count = 1)
         
         mod = None
+        score = None
         if mod_list is not None and len(mod_list) > 0:
             mod = mod_list[0]
             score = score_list[0]

@@ -1,32 +1,67 @@
-from rapidfuzz import fuzz, process
+from rapidfuzz import fuzz, process, utils as fuzz_utils
+
 import numpy as np
+import re
 
 def full_process(s):
+    return re.sub(r'\W', '', s.lower())
+
+def to_lower(s):
     return s.lower()
 
-def custom_scorer(query, choice, score_cutoff = None):
+def remove_brackets(text):
+    return re.sub(r'\[.*?\]', '', text).strip()
+
+def loose_scorer(query: str, choice: str, score_cutoff: bool = None):
     exact_match_bonus = 1000  # Some high value to ensure exact matches are prioritized
-    length_penalty = abs(len(query) - len(choice))
+    # Check for exact match
+    if query == choice:
+        return exact_match_bonus
+    
+    return fuzz.partial_ratio(query, choice, processor=to_lower)
+    
+    
+def strict_scorer(query: str, choice: str, score_cutoff: bool = None):
+    exact_match_bonus = 1000  # Some high value to ensure exact matches are prioritized
+    
+    # TODO: Maybe move this after exact match check, in case this is not wanted for exact matches
+    query = remove_brackets(query)
+    choice = remove_brackets(choice)
 
     # Check for exact match
     if query == choice:
         return exact_match_bonus
 
+    score = fuzz.token_sort_ratio(query, choice, processor = fuzz_utils.default_process)
+    
+    length_difference = abs(len(query) - len(choice))
+    if length_difference < 10:
+        return score
+    
+    token_set_ratio = fuzz.token_set_ratio(query, choice, processor = fuzz_utils.default_process)
+    print("token set ratio:", token_set_ratio)
+    #if token_set_ratio > 80:
+    partial = (fuzz.partial_token_sort_ratio(query, choice, processor = fuzz_utils.default_process) - length_difference * 0.2)
+    print("partial score:", partial)
+    score = 0.25 * score + 0.75 * partial
+        
+    return score
+    
     # + fuzz.ratio(query, choice)  #partial_ratio
     #score = fuzz.WRatio(query, choice, score_cutoff=score_cutoff) - length_penalty * 0.1
-    base = fuzz.ratio(query, choice, processor=full_process)
-    tsr = fuzz.token_sort_ratio(query, choice, processor=full_process)
-    partial = fuzz.partial_ratio(query, choice, processor=full_process) - length_penalty * 0.2
-    ptsr = fuzz.partial_token_sort_ratio(query, choice, processor=full_process) - length_penalty * 0.2
+    # base = fuzz.ratio(query, choice, processor=to_lower)
+    # tsr = fuzz.token_sort_ratio(query, choice, processor=to_lower)
+    # partial = fuzz.partial_ratio(query, choice, processor=to_lower) - length_difference * 0.2
+    # ptsr = fuzz.partial_token_sort_ratio(query, choice, processor=to_lower) - length_difference * 0.2
+    #fuzz.partial_ratio_alignment
     
-    #print(query + " - " + choice + ":\t\tscores - base: ", base, " tsr: ", tsr, " partial: ", partial, " ptsr: ", ptsr)
-    return max(base, tsr, partial, ptsr) # base + tsr + partial + ptsr
-
+    #print(query + " - " + choice + ":\t\tscores - base: ", base, " tsr: ", tsr, " parptsrtial: ", partial, " ptsr: ", ptsr, " tsetr: ", tsetr)
+    #return max(base, tsr, partial, ptsr) # base + tsr + partial + ptsr
 
 # get best match from search in a list:
 def best_match(name, titles, count = 1):
     # print("all titles:", titles)
-    results = process.extract(name, titles, scorer=custom_scorer, limit=count, score_cutoff=50)
+    results = process.extract(name, titles, scorer=strict_scorer, limit=count)#, score_cutoff=50)
     if len(results) == 0:
         return None
 
@@ -59,12 +94,12 @@ def match_mods(*mods):
             scores =  np.zeros((len(mod0), len(mod1)))
             for i in range(len(mod0)):
                 for j in range(len(mod1)):
-                    scores[i,j] = custom_scorer(mod0[i].name, mod1[j].name)
+                    scores[i,j] = strict_scorer(mod0[i].name, mod1[j].name)
             return scores               
         
         # calculate score for two mods
         else:
-            score = custom_scorer(mod0.name, mod1.name)
+            score = strict_scorer(mod0.name, mod1.name)
             return score
     
     # calculate score matrix for multiple mods
@@ -74,7 +109,7 @@ def match_mods(*mods):
         for i in range(len(mods)):
             for j in range(i+1, len(mods)):
                 # calculate score
-                score = custom_scorer(mods[i].name, mods[j].name)
+                score = strict_scorer(mods[i].name, mods[j].name)
                 scores[i, j] = score
                 scores[j, i] = score
                 

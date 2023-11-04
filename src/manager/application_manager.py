@@ -19,6 +19,9 @@ class ApplicationManager:
         if mods is None:
             mods = self.apiManager.get_mod_search_results(name, source = source)
 
+        if mods is None:
+            return None
+
         mods_dict = mods.to_dict()
         
         # return result into json

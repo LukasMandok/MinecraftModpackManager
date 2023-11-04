@@ -9,13 +9,15 @@ if __name__ == '__main__':
     # test_score = utils.custom_scorer("the aether", "the Aether II")
     # print("testscore: ", test_score)
     
-    manager = application_manager.ApplicationManager()
-    score = manager.apiManager.retrieve_mod("Lihium")
-    print("comparison score", score)
+    # manager = application_manager.ApplicationManager()
+    # score = manager.apiManager.retrieve_mod("Lithium")
+    # print("comparison score", score)
     
     # version = GameVersion("1.19.4")
     # dict = {version : "test"}
     # print(dict["1.19.4"])
     # print("version1: ", "1.19.4" == version)
     # print("version2: ", version == "1.19.4")
+    
+    print("comparison: ", utils.strict_scorer("Lithium", "Lithium Eredium"))
     

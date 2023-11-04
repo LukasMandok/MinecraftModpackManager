@@ -29,6 +29,7 @@ class ApiManager:
         
         mods = [mod_m, mod_c]
         scores = np.array([score_m, score_c])
+        print("scores: ", scores)
         
         # Use source with perfect match
         use_source = (scores == 1000)
