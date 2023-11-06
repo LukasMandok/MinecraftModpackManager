@@ -8,7 +8,7 @@ from ..api.high_level_api import HighLevelAPI
 from .. import utils
 from .. import config
 
-from ..models import formats
+from ..models.mod_info import SourceModInfo, SharedSourceModInfo
 from ..models.constants import *
 
 class ApiManager:
@@ -21,37 +21,58 @@ class ApiManager:
         # New approach using multiple inheritance and passing instance of child object (modrinth and curseforge api) to HighLevelAPI
         # self.m_api = ModrinthAPI()
         # self.c_api = CurseForgeAPI()
+        
     
         
-    def retrieve_mod(self, name, versions = None, mod_loaders = None):
-        mod_m, score_m = self.m_api.find_best_matching_mod(name)
-        mod_c, score_c = self.c_api.find_best_matching_mod(name)
+    def retrieve_mod(self, name: str):
+        shared_mod_info = self.find_shared_mod(name)
+
+        # TODO: Can you do this dynamically via the __getattr__ function of SharedSourceMod
+        # Maybe also do this when retrieving additional project data directly  
+        # self.m_api.process_version_data(shared_mod_info.mod_m)
+        # self.c_api.process_version_data(shared_mod_info.mod_c)
         
-        mods = [mod_m, mod_c]
+        pass
+        
+    
+        
+    def find_shared_mod(self, name: str) -> list:
+        mod_info_m, score_m = self.m_api.find_best_matching_mod(name)
+        mod_info_c, score_c = self.c_api.find_best_matching_mod(name)
+        
+        mods_info = np.array([mod_info_m, mod_info_c])
         scores = np.array([score_m, score_c])
-        print("scores: ", scores)
+        # print("scores: ", scores)
         
         # Use source with perfect match
-        use_source = (scores == 1000)
+        use_source = (scores >= 100)
         
-        if not any(scores > 80):
+        if not any(scores > 90):
             print("Could not find any mod")
             return None
         
+        #score_diff = abs(score_m - score_c)
+        # print("score diff: ", score_diff)
+        
+        score_diff_threshold = 5
         if not any(use_source):
             # get index of largest element in list
-            use_source[np.argmax(scores)] = True
+            max_score = np.max(scores)
+            use_source[max_score - scores < score_diff_threshold] = True
         
-        print("Using source: ", use_source)
+        # print("Using source: ", use_source)
+    
+        #comparison_score = utils.match_mods(mod_m, mod_c)
+        # print("comparison score: ", comparison_score)
         
+        # Add missing mod versions to the mod_info
+        for mod_info in mods_info[use_source]:
+            print("mod info:", mod_info)
+            mod_info.api.retrieve_versions(mod_info)
         
-        score_diff = abs(score_m - score_c)
-        print("score diff: ", score_diff)
+        shared_mod_info = SharedSourceModInfo(*mods_info[use_source])
         
-        comparison_score = utils.match_mods(mod_m, mod_c)
-        
-        return comparison_score
-        
+        return shared_mod_info
             
     def get_mod_search_results(self, name, versions=None, loader=None, count=5, source = Sources.UNKNOWN):
         # search modrinth and curseforge

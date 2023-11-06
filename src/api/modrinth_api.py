@@ -2,7 +2,8 @@
 import json
 
 # packages
-from ..models.formats import *
+from ..models.formats import GameVersion
+from ..models.mod_info import SourceModInfo
 from ..models.constants import *
 
 from .base_api import BaseAPI
@@ -53,6 +54,11 @@ class ModrinthAPI(BaseAPI): #, HighLevelAPI
 
         return self.request(sub_url, params, debug = debug)
         
+    # get mod versions:
+    def get_project_versions(self, project, debug = False):
+        sub_url = f"/project/{project}/version"
+
+        return self.request(sub_url, debug = debug)
         
     # search for a project 
     def search_project(self, params, debug = False):
@@ -64,12 +70,6 @@ class ModrinthAPI(BaseAPI): #, HighLevelAPI
     
     
     ### Specific access (specifically available for this api)
-    
-    # get mod versions:
-    def get_project_versions(self, project, debug = False):
-        sub_url = f"/project/{project}/version"
-
-        return self.request(sub_url, debug = debug)
 
     # get details about a specific version
     def get_version(self, version_id, debug = False):
@@ -86,35 +86,14 @@ class ModrinthAPI(BaseAPI): #, HighLevelAPI
         return self.request(sub_url, params, debug = debug)
     
     # get members from a team
-    def get_project_team(self, project, debug = False):
+    def get_project_team(self, project, debug = False): 
         sub_url = f"/project/{project}/members"
         
         return self.request(sub_url, debug = debug)
     
     
-    
+        
     ### More complex, api specific functions
-    
-    def add_missing_project_info(self, project):
-        # add authors:
-        # FIXME: removed since it is slow
-        #team = self.get_project_team(project["id"])
-        ##names = [member["user"]["name"] or member["user"]["username"] for member in team]
-        #names = [member["user"]["username"] for member in team]
-        #project["authors"] = names
-        project["authors"] = project["team"]
-        
-        # add recent version - this takes too long
-        # versions = self.get_project_versions(project["id"])
-        # project["recent_version"] = versions[0]["game_versions"][-1]        
-        
-        # add recent version 
-        versions = project["game_versions"]
-        recent_version = GameVersion.find_latest(versions)
-        print("recent version:", recent_version)
-        project["recent_version"] = str(recent_version)
-        
-        return project
         
     # search for a mod
     def get_mod_search_results(self, name, version = None, modloader = None, count = 20, debug = False):
@@ -162,9 +141,55 @@ class ModrinthAPI(BaseAPI): #, HighLevelAPI
             return None
         
         return results["hits"]
+    
+    
+    def add_missing_project_info(self, project):
+        # add authors:
+        # FIXME: removed since it is slow
+        #team = self.get_project_team(project["id"])
+        ##names = [member["user"]["name"] or member["user"]["username"] for member in team]
+        #names = [member["user"]["username"] for member in team]
+        #project["authors"] = names
+        project["authors"] = project["team"]
+        
+        # add recent version - this takes too long
+        # versions = self.get_project_versions(project["id"])
+        # project["recent_version"] = versions[0]["game_versions"][-1]        
+        
+        # add recent version 
+        versions = project["game_versions"]
+        recent_version = GameVersion.find_latest(versions)
+        print("recent version:", recent_version)
+        project["recent_version"] = str(recent_version)
 
-    @staticmethod
-    def extract_data(data):
+        return project
+    
+    
+    def decode_version_info(self, version_info):
+        # version specific stuff
+        version_id    = version_info["id"]
+        version_num   = version_info["version_number"]
+        version_date  = version_info["date_published"]
+        
+        dependencies = version_info["dependencies"]
+        
+        # file stuff
+        file_url = None
+        for file in version_info["files"]:
+            if file["primary"] == True:
+                file_url = file["url"]
+            
+        # game versions and loaders
+        game_versions = [GameVersion(v) for v in version_info["game_versions"]]
+        loaders      = version_info["loaders"]
+        
+        return version_id, version_num, version_date, dependencies, file_url, game_versions, loaders
+    
+    
+    
+    
+
+    def extract_data(self, data):
         source      = Sources.MODRINTH 
         id          = data['id']
         name        = data['title']

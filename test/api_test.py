@@ -9,9 +9,10 @@ if __name__ == '__main__':
     # test_score = utils.custom_scorer("the aether", "the Aether II")
     # print("testscore: ", test_score)
     
-    # manager = application_manager.ApplicationManager()
-    # score = manager.apiManager.retrieve_mod("Lithium")
-    # print("comparison score", score)
+    manager = application_manager.ApplicationManager()
+    # CTOV - Farmer's Delight Compat
+    shared_mod = manager.apiManager.find_shared_mod("Terralith") #ChoiceTheorems Overhauled Villages
+    print("shared_mod", shared_mod)
     
     # version = GameVersion("1.19.4")
     # dict = {version : "test"}
@@ -19,5 +20,7 @@ if __name__ == '__main__':
     # print("version1: ", "1.19.4" == version)
     # print("version2: ", version == "1.19.4")
     
-    print("comparison: ", utils.strict_scorer("Lithium", "Lithium Eredium"))
+    # print("comparison 1: ", utils.strict_scorer("CTOV - Farmer Delight Compat", "CTOV - Farmer Delight Compatibility pack"))
+    # print("comparison 2: ", utils.strict_scorer("Terralith", "Terralith - Villager Compar"))
+    # print("comparison 3: ", utils.strict_scorer("Farmers Delight", "Farmers Delight [Fabric]"))
     
