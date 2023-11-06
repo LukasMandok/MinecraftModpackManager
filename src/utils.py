@@ -18,34 +18,41 @@ def loose_scorer(query: str, choice: str, score_cutoff: bool = None):
     if query == choice:
         return exact_match_bonus
     
-    return fuzz.partial_ratio(query, choice, processor=to_lower)
+    return fuzz.partial_token_sort_ratio(query, choice, processor=to_lower)
     
     
 def strict_scorer(query: str, choice: str, score_cutoff: bool = None):
-    exact_match_bonus = 1000  # Some high value to ensure exact matches are prioritized
+    exact_match_bonus = 100  # Some high value to ensure exact matches are prioritized
     
     # TODO: Maybe move this after exact match check, in case this is not wanted for exact matches
-    query = remove_brackets(query)
-    choice = remove_brackets(choice)
+    # query = remove_brackets(query)
+    # choice = remove_brackets(choice)
 
     # Check for exact match
     if query == choice:
         return exact_match_bonus
 
-    score = fuzz.token_sort_ratio(query, choice, processor = fuzz_utils.default_process)
+    score = fuzz.ratio(query, choice, processor = fuzz_utils.default_process)
     
-    length_difference = abs(len(query) - len(choice))
-    if length_difference < 10:
+    length_diff = abs(len(query) - len(choice))
+    rel_length_diff = length_diff / len(query)
+    #large_diff = length_diff > 10
+    
+    if rel_length_diff > 0.5:
         return score
+    
+    partial = (fuzz.partial_token_sort_ratio(query, choice, processor = fuzz_utils.default_process) - length_diff * 0.2)
+    print("partial score:", partial)
+    score = 0.25 * score + 0.75 * partial
     
     token_set_ratio = fuzz.token_set_ratio(query, choice, processor = fuzz_utils.default_process)
     print("token set ratio:", token_set_ratio)
-    #if token_set_ratio > 80:
-    partial = (fuzz.partial_token_sort_ratio(query, choice, processor = fuzz_utils.default_process) - length_difference * 0.2)
-    print("partial score:", partial)
-    score = 0.25 * score + 0.75 * partial
+    if token_set_ratio > 80:
+        score = score + (100 - score ) * 0.5
         
     return score
+
+    ## issues with  utils.strict_scorer("CTOV - Farmer Delight Compat", "CTOV - Farmer Delight Compatibility pack")
     
     # + fuzz.ratio(query, choice)  #partial_ratio
     #score = fuzz.WRatio(query, choice, score_cutoff=score_cutoff) - length_penalty * 0.1
