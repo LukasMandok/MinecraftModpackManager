@@ -1,35 +1,15 @@
 import json
 import os
 
-from .. import config
+from ..config import config
 
 # Create a Class for the DataManager that contains the functinos above:
 class DataManager:
-    def __init__(self):
-        self.file_path = config.load_config()["mod_list_file"]
+    def __init__(self, fileManager):
         self.data = None
+        self.fileManager = fileManager
 
-        self._load_data()
-
-    # private functions
-
-    def _load_data(self):
-        # create the file if it doesn't exist
-        if not os.path.exists(self.file_path):
-            with open(self.file_path, 'w') as f:
-                json.dump({"mods": {}}, f)
-
-
-        with open(self.file_path, 'r') as f:
-            self.data = json.load(f)
-        
-
-    def _save_data(self):
-        with open(self.file_path, 'w') as f:
-            json.dump(self.data, f)
-
-
-    # public functions
+    ### public functions
 
     def get_projects(self, type):
         return self.data[type]
@@ -44,7 +24,7 @@ class DataManager:
     def add_project(self, type, project):
         id = project.getID()
         self.data[type].append()
-        self._save_data()
+        self._save_mod_list()
 
     # mod specific funtions
 

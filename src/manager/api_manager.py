@@ -6,7 +6,7 @@ from ..api.curseforge_api import CurseForgeAPI
 from ..api.high_level_api import HighLevelAPI
 
 from .. import utils
-from .. import config
+from ..config import config
 
 from ..models.mod_info import SourceModInfo, SharedSourceModInfo
 from ..models.constants import *
@@ -26,11 +26,6 @@ class ApiManager:
         
     def retrieve_mod(self, name: str):
         shared_mod_info = self.find_shared_mod(name)
-
-        # TODO: Can you do this dynamically via the __getattr__ function of SharedSourceMod
-        # Maybe also do this when retrieving additional project data directly  
-        # self.m_api.process_version_data(shared_mod_info.mod_m)
-        # self.c_api.process_version_data(shared_mod_info.mod_c)
         
         pass
         
@@ -73,6 +68,8 @@ class ApiManager:
         shared_mod_info = SharedSourceModInfo(*mods_info[use_source])
         
         return shared_mod_info
+    
+    
             
     def get_mod_search_results(self, name, versions=None, loader=None, count=5, source = Sources.UNKNOWN):
         # search modrinth and curseforge

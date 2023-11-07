@@ -1,9 +1,16 @@
+ServerSync
+
+# Larger Content Packs
 Content
     Pack
+        # The Ather Mod
         The Aether
 
 World
+    # Generation stuff
     Generation
         Terralith
-        Structory
+        Structory # This is probably a data
         Incendium
+    Strucutres
+        Pillager Outposts
