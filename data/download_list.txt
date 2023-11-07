@@ -7,10 +7,12 @@ Content
         The Aether
 
 World
-    # Generation stuff
+    General World Mod 1
     Generation
         Terralith
+        
         Structory # This is probably a data
         Incendium
     Strucutres
         Pillager Outposts
+    General World Mod 2
