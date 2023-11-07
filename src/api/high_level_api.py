@@ -1,7 +1,7 @@
-from .base_api import BaseAPI
-
 from .. import utils
 from ..models import formats
+
+from pprint import pprint
 
 class HighLevelAPI():
     def __init__(self, api):
@@ -11,6 +11,39 @@ class HighLevelAPI():
     def __getattr__(self, method):
         print("redirecting to api: ", method)
         return getattr(self.api, method)
+    
+    
+    ### 
+    def retrieve_versions(self, project_info: "SourceProjectInfo"):
+        #pprint("high_level_api - retrieve_versions - project_info: ")
+        #pprint(project_info.old_project_data)
+        id = project_info.id
+        
+        print("high_level_api - retrieve_versions - id: ", id)
+        
+        version_data, game_version_data, loader_data = self.api.get_version_info(id)
+        
+        
+        project_info.add_version_dict(version_data)
+        project_info.add_game_version_dict(game_version_data)
+        
+        # check if loader_data is not an empty dictionary:
+        if loader_data:        
+            project_info.add_loader_dict(loader_data)
+        
+        print("adding game versions:")
+        pprint(project_info.game_version_dict)
+        
+        print("adding loaders:")
+        pprint(project_info.loader_dict)
+            
+        # pprint("high_level_api - retrieve_versions - version_data: ")
+        # pprint(version_data)
+        # pprint("high_level_api - retrieve_versions - game_version_data: ")
+        # pprint(game_version_data)
+        # pprint("high_level_api - retrieve_versions - loader_data: ")
+        # pprint(loader_data)
+
         
     ### Specific access
     def get_best_results_by_score(self, search_results, name, count = 5):
@@ -54,9 +87,16 @@ class HighLevelAPI():
             full_project = self.api.add_missing_project_info(project)
             mod_info = self.api.extract_data(full_project)
             
+            mod_info.add_api(self)
+            
+            # NOTE: add_version_data can be called here, maybe
+            
             mods.append(mod_info)
             
         return mods
+    
+    
+    ### USE API TO retrieve Search Results
     
     # find #count best matching mods for given name
     def get_best_mods_search(self, name, versions, loader, count = 5):
@@ -79,6 +119,7 @@ class HighLevelAPI():
         mod_list, score_list = self.get_best_mods_search(name, versions=None, loader=None, count = 1)
         
         mod = None
+        score = None
         if mod_list is not None and len(mod_list) > 0:
             mod = mod_list[0]
             score = score_list[0]

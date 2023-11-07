@@ -1,6 +1,6 @@
 from .constants import *
     
-### Mod stuff
+### Mod Info stuff
         
 class ModList(list):
     def __init__(self, mods: list = []):
@@ -13,133 +13,6 @@ class ModList(list):
         return [mod.to_dict() for mod in self]        
         
         
-class SourceProjectInfo:
-    def __init__(self, source, project_type, id, name, slug, description, categories = [], authors = [],
-                 updated = "", icon = "", downloads = 0, color = None):
-        self.source      = source
-        self.type        = project_type
-        self.id          = str(id)
-        self.name        = name
-        self.slug        = slug
-        self.description = description
-        self.categories  = categories
-        self.authors     = authors
-        self.updated     = updated
-        self.icon        = icon
-        self.downloads   = downloads
-        self.color       = color
-
-        self.links            = {}
-        self.long_description = None
-        self.screenshots      = []
-
-        # self.mod_loaders    = None
-        self.recent_version = None
-        self.client_side    = None
-        self.server_side    = None
-
-        self.versions       = {}
-        self.game_versions  = {}
-
-    def add_long_desc(self, long_description):
-        self.long_description = long_description
-
-    def add_screenshot(self, url, title, desc):
-        screenshot = {
-            "url"   : url,
-            "title" : title,
-            "desc"  : desc
-        }
-        self.screenshots.append(screenshot)
-
-    def add_links(self, source, website=None, issues=None, wiki=None, donation=None):
-        self.links = {
-            'source'   : source,
-            'website'  : website,
-            'issues'   : issues,
-            'wiki'     : wiki,
-            'donation' : donation
-        }
-
-    def add_details(self, recent_version, client_side = None, server_side = None):
-        # self.mod_loaders    = mod_loaders
-        self.recent_version = recent_version
-        self.client_side    = client_side
-        self.server_side    = server_side
-
-    def add_version(self, version, game_versions):
-        self.versions[version] = {
-            #"mod_loaders"   : mod_loaders,
-            "game_versions" : game_versions
-        }
-
-    def add_game_version(self, game_version, versions):
-        self.game_versions[game_version] = {
-            #"mod_loader" : mod_loader,
-            "versions"   : versions
-        }
-
-    def to_dict(self):
-        return {
-            "source"          : self.source.value,
-            "type"            : self.type,
-            "id"              : self.id,
-            "name"            : self.name,
-            "slug"            : self.slug,
-            "description"     : self.description,
-            "categories"      : self.categories,
-            "links"           : self.links,
-            "author"          : self.authors,
-            "updated"         : self.updated,
-            "icon"            : self.icon,
-            "downloads"       : self.downloads,
-            "color"           : self.color,
-            "long_description": self.long_description,
-            "screenshots"     : self.screenshots,
-            # "mod_loaders"     : self.mod_loaders,
-            "recent_version"  : self.recent_version,
-            "client_side"     : self.client_side,
-            "server_side"     : self.server_side,
-            "versions"        : self.versions,
-            "game_versions"   : self.game_versions,
-        }
-        
-class SourceModInfo(SourceProjectInfo):
-    def __init__(self, source, id, name, slug, description, categories = [], authors = [],
-                 updated = "", icon = "", downloads = 0, color = None):
-        
-        self.mod_loaders    = None
-        
-        super().__init__(source, "mod", id, name, slug, description, categories, authors, updated, icon, downloads, color)
-        
-    def add_details(self, mod_loaders, recent_version, client_side = None, server_side = None):
-        super().add_details(recent_version, client_side, server_side)
-        self.mod_loaders    = mod_loaders
-        
-    def add_version(self, version, mod_loaders, game_versions):
-        self.versions[version] = {
-            "mod_loaders"   : mod_loaders,
-            "game_versions" : game_versions
-        }
-
-    def add_game_version(self, game_versions, mod_loader, versions):
-        self.game_versions[game_versions] = {
-            "mod_loader" : mod_loader,
-            "versions"   : versions
-        }
-        
-    def to_dict(self):
-        dict = super().to_dict()
-        dict["mod_loaders"] = self.mod_loaders
-        
-        return dict
-
-class SharedSourceModInfo:
-    def __init__(self, modrinth_mod, curseforge_mod):
-        self.modrinth_mod   = modrinth_mod
-        self.curseforge_mod = curseforge_mod
-        
-
 
 ### GameVersion
 
@@ -184,6 +57,22 @@ class GameVersion:
         else:
             raise TypeError(f"__value must be an instance of {type(self).__name__} or str")
     
+    def __ne__(self, __value: object) -> bool:
+        if isinstance(__value, type(self)):
+            return (self.v0 != __value.v0 or self.v1 != __value.v1 or self.v2 != __value.v2)
+
+        elif isinstance(__value, str):
+            cond = (self.text == __value)
+            if cond: return False
+            
+            # maybe this is not such a good because it will take much time to compute:
+            print("compare: " + self.text + " with " + __value + " , not identical text")
+            converted = self.__class__(__value)
+            return self.__ne__(converted)
+        
+        else:
+            raise TypeError(f"__value must be an instance of {type(self).__name__} or str")
+        
     # greater than
     def __gt__(self, __value: object) -> bool:
         cond1 = False

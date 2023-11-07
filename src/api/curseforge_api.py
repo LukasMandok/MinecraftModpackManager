@@ -2,7 +2,8 @@
 import json
 
 # packages
-from ..models.formats import *
+from ..models.formats import GameVersion
+from ..models.mod_info import SourceModInfo
 from ..models.constants import *
 
 from .base_api import BaseAPI
@@ -21,7 +22,8 @@ class CurseForgeAPI(BaseAPI): #, HighLevelAPI
             Modloader.QUILT : 5,
             Modloader.NEOFORGE : 6
         }
-
+        self.loaders = ["forge", "neoforge", "fabric", "quilt", "paper"]
+        
         api_url = "https://api.curseforge.com/v1"
         download_url = "https://api.curseforge.com/v1"
         api_key = "$2a$10$IGsBR6CXosB.y2eYiS6eQu7a6CCDKGDBeLOeqMcIeLnSCAJBOiAee"
@@ -69,6 +71,9 @@ class CurseForgeAPI(BaseAPI): #, HighLevelAPI
             return None
         
         return result["data"]
+    
+    def get_project_versions(self, project_id, debug = False):
+        return self.get_mod_files(project_id, debug = debug)
 
     # params:
     # gameId (int), classId (int), categoryId (int), categoryIds (string), gameVersion (string)
@@ -104,12 +109,47 @@ class CurseForgeAPI(BaseAPI): #, HighLevelAPI
         return self.request(sub_url, params, debug = debug)
     
     
+    # get specific file of mod
+    def get_mod_file(self, mod_id, file_id, debug = False):
+        sub_url = f"/mods/{mod_id}/files/{file_id}"
+
+        return self.request(sub_url, debug = debug)
+    
+    
+    # get all files of one mod - NOTE: this is a bit weired
+    def get_mod_files(self, mod_id, game_version = None, mod_loader = None, debug = False):
+        sub_url = f"/mods/{mod_id}/files"
+        
+        mod_loader_type = None
+        if mod_loader:
+            mod_loader_type = self.get_modloader_type(mod_loader)
+        
+        params = {"gameVersion"       : game_version,       # not required
+                  "modLoaderType"     : mod_loader_type,    # not required
+                  "gameVersionTypeId" : None,               # not required
+                  "index"             : None,               # not required    
+                  "pageSize"          : 50}                 # not required 
+        # additional parameters (all not required):
+        # gameVersionTypeId, index, pageSize
+        
+        return self.request(sub_url, params, debug = debug)["data"]
+    
+    
+    # get files for multiple mods
+    def get_files(self, mod_ids, debug = False):
+        sub_url = f"/mods/files"
+        
+        # GetModFilesRequestBody
+        body = {
+            "modIds": list(mod_ids),
+            "filterPcOnly": True
+        }
+        
+        return self.request(sub_url, None, body, debug = debug)
+        
+    
     
     ### More complex, api specific functions
-    
-    def add_missing_project_info(self, project):
-        return project
-
 
     # search for a mod
     def get_mod_search_results(self, name, version = None, modloader = None, count = 50, debug = False):
@@ -145,6 +185,44 @@ class CurseForgeAPI(BaseAPI): #, HighLevelAPI
         return results["data"]
 
 
+    ### Complete Project information
+
+    def add_missing_project_info(self, project):
+        return project
+
+
+    def decode_version_info(self, version_info):
+        # version specific stuff
+        version_id    = version_info["id"]
+        version_num   = version_info["displayName"]
+        version_date  = version_info["fileDate"]
+        
+        dependencies  = version_info["dependencies"]
+        file_url      = version_info["downloadUrl"]
+        
+        # reconstruct items from gameVersion list to game versions and modloaders 
+        game_versions = []
+        loaders       = []
+        loader_version_info = version_info["gameVersions"]
+        for item in loader_version_info:
+            item = item.lower()
+            
+            # looking if item is in the list of loaders
+            if item in self.loaders:
+                loaders.append(item)
+                
+            # try converting version to GameVersion
+            else:
+                try:
+                    game_version = GameVersion(item)
+                    game_versions.append(game_version)
+                except:
+                    print("Unknown game version or loader:", item)
+                
+        return version_id, version_num, version_date, dependencies, file_url, game_versions, loaders
+        
+
+
     # extract data from a project
     
     @staticmethod
@@ -164,8 +242,10 @@ class CurseForgeAPI(BaseAPI): #, HighLevelAPI
         icon        = data['logo']['url'] if 'logo' in data and data['logo'] else None
         downloads   = data['downloadCount']
         
+        project_info= data
+        
         # Creating the Mod object
-        mod_info = SourceModInfo(source, id, name, slug, description, categories, authors, updated, icon, downloads, color)
+        mod_info = SourceModInfo(source, id, name, slug, description, categories, authors, updated, icon, downloads, color, project_info)
 
         # Extracting additional details
         mod_info.add_details(

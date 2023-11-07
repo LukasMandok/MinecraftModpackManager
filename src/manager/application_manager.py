@@ -1,4 +1,4 @@
-from . import api_manager, data_manager, download_manager, project_manager
+from . import api_manager, data_manager, download_manager, project_manager, file_manager
 
 from ..models.constants import Sources
 
@@ -7,7 +7,8 @@ import json
 class ApplicationManager:
     def __init__(self):
         self.apiManager = api_manager.ApiManager()
-        self.dataManager = data_manager.DataManager()
+        self.fileManager = file_manager.FileManager()
+        self.dataManager = data_manager.DataManager(self.fileManager)
         self.projectManager = project_manager.ProjectManager()
         self.downloadManager = download_manager.DownloadManager()
 
@@ -18,6 +19,9 @@ class ApplicationManager:
         # if not found, search the api
         if mods is None:
             mods = self.apiManager.get_mod_search_results(name, source = source)
+
+        if mods is None:
+            return None
 
         mods_dict = mods.to_dict()
         
