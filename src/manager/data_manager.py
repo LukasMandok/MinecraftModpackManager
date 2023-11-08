@@ -5,9 +5,45 @@ from ..config import config
 
 # Create a Class for the DataManager that contains the functinos above:
 class DataManager:
-    def __init__(self, fileManager):
+    def __init__(self, fileManager, downloadManager):
         self.data = None
         self.fileManager = fileManager
+        self.downloadManager = downloadManager
+        
+        self.download_list_file_list = {}
+        self.download_list_file_dict = {}
+        
+        self.download_list_folder_list = {}
+        self.download_list_folder_dict = {}
+
+
+    ### private functions
+    
+    def _add_mod_to_list(self, mod_list, name, categories, comment = None):
+        mod_list[name] = {"categories"   : categories.copy(),
+                            "comment"      : comment}
+        
+    def _add_mod_to_dict(self, mod_dict, name, categories, comment = None):
+        current_dict = mod_dict
+        #categories = categories or [None]
+        for category in categories:
+            current_dict = current_dict.setdefault("category", {})
+            current_dict = current_dict.setdefault(category, {})
+        current_dict = current_dict.setdefault("mods", [])
+        current_dict.append({"name" : name, "comment" : comment})
+
+
+    def _load_download_list_from_file(self):
+        for mod_info in self.fileManager.load_download_list():
+            print("adding:", mod_info)
+            self._add_mod_to_list(self.download_list_file_list, *mod_info)
+            self._add_mod_to_dict(self.download_list_file_dict, *mod_info)
+        
+    def _load_download_list_from_folder(self):
+        for mod_info in self.downloadManager.load_download_list():
+            self._add_mod_to_list(self.download_list_folder_list, *mod_info)
+            self._add_mod_to_dict(self.download_list_folder_dict, *mod_info)
+        
 
     ### public functions
 

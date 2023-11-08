@@ -6,13 +6,11 @@ from ..config import config
 class FileManager:
     def __init__(self):
         self.mod_list_file = config.mod_list_file
-        self.download_list_file = config.get_download_list_file
-        self.data = None
+        self.download_list_file = config.download_list_file
 
-        self.mod_list = self._load_mod_list()
-        self.download_mod_list, self.download_mod_dict = self._load_download_list()
-        
-    ### private functions
+        #self.mod_list = self._load_mod_list()
+        #self.download_mod_list, self.download_mod_dict = self._load_download_list()
+    
         
     # Json Mod List
     def _load_mod_list(self):
@@ -35,54 +33,59 @@ class FileManager:
             
 
     # Txt download List
-    def _load_download_list(self):
-        with open(self.download_list_file, 'r') as file:
-            lines = file.readlines()
+    def save_download_list(self, mod_list):
+        lines = self.generate_download_file(mod_list)
+        with open(self.download_list_file, 'w') as file:
+            file.writelines(lines)
             
-        return self.parse_download_file(lines)      
-        
+    def load_download_list(self):
+        with open(self.download_list_file, 'r') as file:
+            yield from self.parse_download_file(file)
+            #lines = file.readlines()
+        #return self.parse_download_file(lines)      
     
-    def _save_download_list(self, mods):
-        pass
     
     @staticmethod
-    def parse_download_file(lines):
+    def parse_download_file(file):
         mod_dict = {}
         mod_list = {}
                 
         current_categories = []
         indentation = 0
-        line = None
+        mod = None
         intendation_steps = None
         comment = None
         
-        def add_mod(name, categories, comment = None):
-            mod_list[name] = {"categories"   : categories.copy(),
-                               "comment"      : comment}
+        def parse_lines(lines):
+            for line in lines:
+                line = line.rstrip()  # remove trailing whitespace
+                indentation = len(line) - len(line.lstrip())
+                line = line.strip()
 
-            current_dict = mod_dict
-            #categories = categories or [None]
-            for category in categories:
-                current_dict = current_dict.setdefault("category", {})
-                current_dict = current_dict.setdefault(category, {})
-            current_dict = current_dict.setdefault("mods", [])
-            current_dict.append({"name" : name, "comment" : comment})
+                # ignore comments and empty lines
+                if line.startswith("#") or not line:
+                    continue
+
+                # ignore comment part of not-empty lines and strip again
+                line, *comment = line.split("#", 1)
+                mod = line.strip()
+                comment = comment[0].strip() if comment else None
+
+                yield mod, indentation, comment
+        
+        # def add_mod(name, categories, comment = None):
+        #     mod_list[name] = {"categories"   : categories.copy(),
+        #                        "comment"      : comment}
+
+        #     current_dict = mod_dict
+        #     #categories = categories or [None]
+        #     for category in categories:
+        #         current_dict = current_dict.setdefault("category", {})
+        #         current_dict = current_dict.setdefault(category, {})
+        #     current_dict = current_dict.setdefault("mods", [])
+        #     current_dict.append({"name" : name, "comment" : comment})
                     
-        for next_line in lines:
-            next_line = next_line.rstrip() # remove trailing whitespace
-            
-            # TODO: more preciise way to determine indentation (separate tabs from spaces)
-            next_indentation = len(next_line) - len(next_line.lstrip())
-            next_line = next_line.strip()
-            
-            # ignore comments and emtpy lines
-            if next_line.startswith("#") or next_line is None or next_line == "":
-                continue
-            
-            # ignore comment part of not-empty lines and strip again
-            next_line, *next_comment = next_line.split("#", 1)
-            next_line = next_line.strip()
-            next_comment = next_comment[0].strip() if next_comment else None
+        for next_mod, next_indentation, next_comment in parse_lines(file):
             
             # calculate intendation difference to previous line and normalize to 1
             diff = next_indentation - indentation
@@ -92,30 +95,33 @@ class FileManager:
             else:
                 diff //= intendation_steps
                 
-            if line:
+            if mod:
                 if diff > 0:
                     # previous line was a category
-                    current_categories.append(line)
+                    current_categories.append(mod)
                     
                 elif diff < 0:
                     # prvious line was a mod
-                    add_mod(line, current_categories, comment)
+                    #add_mod(line, current_categories, comment)
+                    yield mod, current_categories, comment
                     # remove |diff| number of categories
                     current_categories = current_categories[:diff]
                     
                 elif diff == 0:
                     # add mod:
-                    add_mod(line, current_categories, comment)
+                    #add_mod(mod, current_categories, comment)
+                    yield mod, current_categories, comment
                     
-            line = next_line
+            mod = next_mod
             indentation = next_indentation
             comment = next_comment
             
         # Process the last line of the file
-        if line:
-            add_mod(line, current_categories, next_comment)
+        if mod:
+            #add_mod(mod, current_categories, next_comment)
+            yield mod, current_categories, next_comment
             
-        return mod_dict, mod_list
+        #return mod_dict, mod_list
     
     
     # parse 

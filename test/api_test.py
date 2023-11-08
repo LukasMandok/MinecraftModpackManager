@@ -11,16 +11,9 @@ if __name__ == '__main__':
     
     manager = application_manager.ApplicationManager()
     # CTOV - Farmer's Delight Compat
-    shared_mod = manager.apiManager.find_shared_mod("Terralith") #ChoiceTheorems Overhauled Villages
-    print("shared_mod", shared_mod)
+    #shared_mod = manager.apiManager.find_shared_mod("Terralith") #ChoiceTheorems Overhauled Villages
+    #print("shared_mod", shared_mod)
     
-    # version = GameVersion("1.19.4")
-    # dict = {version : "test"}
-    # print(dict["1.19.4"])
-    # print("version1: ", "1.19.4" == version)
-    # print("version2: ", version == "1.19.4")
+    dataManager = manager.dataManager
     
-    # print("comparison 1: ", utils.strict_scorer("CTOV - Farmer Delight Compat", "CTOV - Farmer Delight Compatibility pack"))
-    # print("comparison 2: ", utils.strict_scorer("Terralith", "Terralith - Villager Compar"))
-    # print("comparison 3: ", utils.strict_scorer("Farmers Delight", "Farmers Delight [Fabric]"))
-    
+    dataManager._load_download_list_from_file()

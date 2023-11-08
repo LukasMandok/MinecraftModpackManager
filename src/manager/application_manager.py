@@ -6,11 +6,11 @@ import json
 
 class ApplicationManager:
     def __init__(self):
+        self.projectManager = project_manager.ProjectManager()
         self.apiManager = api_manager.ApiManager()
         self.fileManager = file_manager.FileManager()
-        self.dataManager = data_manager.DataManager(self.fileManager)
-        self.projectManager = project_manager.ProjectManager()
-        self.downloadManager = download_manager.DownloadManager()
+        self.downloadManager = download_manager.DownloadManager(self.apiManager)
+        self.dataManager = data_manager.DataManager(self.fileManager, self.downloadManager)
 
     def get_mod_search_results(self, name, source = Sources.UNKNOWN):
         # first look in the local data

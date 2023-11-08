@@ -38,7 +38,7 @@ class Config:
     
     @property
     def download_list_file(self):
-        return self.config['mod_list_file']
+        return self.config['download_list_file']
 
 # Usage:
 config = Config()
