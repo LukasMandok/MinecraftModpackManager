@@ -16,4 +16,5 @@ if __name__ == '__main__':
     
     dataManager = manager.dataManager
     
-    dataManager._load_download_list_from_file()
+    dataManager._load_download_list_from_folder()
+    #dataManager._load_download_list_from_file()

@@ -1,16 +1,19 @@
 ServerSync
 
 # Larger Content Packs
+
+[Both]
 Content
     Pack
         # The Ather Mod
         The Aether
 
+[Server]
 World
     General World Mod 1
     Generation
         Terralith
-        
+
         Structory # This is probably a data
         Incendium
     Strucutres

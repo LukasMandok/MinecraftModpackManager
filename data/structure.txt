@@ -10,7 +10,7 @@ Mod.json (Modlist)
 
 type (mods / texturepacks / resourcepacks / shaders):
     name
-    architecture
+    scope
     category
     subcategories
     description
@@ -21,8 +21,8 @@ type (mods / texturepacks / resourcepacks / shaders):
 
     provider (modrinth / curseforge / github )
         info_url
-        download_url
-        id        
+        id      
+        modified_date  
     used_version
     usedmodLoader
     downloaded

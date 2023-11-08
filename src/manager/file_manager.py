@@ -3,6 +3,7 @@ import os
 
 from ..config import config 
 
+
 class FileManager:
     def __init__(self):
         self.mod_list_file = config.mod_list_file
@@ -16,9 +17,12 @@ class FileManager:
             with open(self.file_path, 'w') as f:
                 json.dump({"mods": {}}, f)
 
-
-        with open(self.file_path, 'r') as f:
-            data = json.load(f)
+        try:
+            with open(self.file_path, 'r') as f:
+                data = json.load(f)
+        except json.JSONDecodeError:
+            # the file is corrupt, so we'll just start fresh
+            data = {"mods": {}}
         
         return data
 
@@ -26,18 +30,28 @@ class FileManager:
     def _save_mod_list(self, data):
         with open(self.file_path, 'w') as f:
             json.dump(data, f)
+            f.flush()
+            os.fsync(f.fileno())
             
             
 
     # Txt download List
     def save_download_list(self, mod_list):
         lines = self.generate_download_file(mod_list)
-        with open(self.download_list_file, 'w') as file:
-            file.writelines(lines)
+        try:
+            with open(self.download_list_file, 'w') as file:
+                file.writelines(lines)
+        except Exception as e:
+            print(f'Error saving download list: {e}')
+        
             
     def load_download_list(self):
-        with open(self.download_list_file, 'r') as file:
-            yield from self.parse_download_file(file)
+        try:
+            with open(self.download_list_file, 'r') as file:
+                yield from self.parse_download_file(file)
+        except OSError as error:
+            print(f'Error: {error}')
+            exit(1)
     
     
     @staticmethod
@@ -47,23 +61,33 @@ class FileManager:
         mod = None
         intendation_steps = None
         comment = None
+        scope = None
+        next_scope = None
         
         def parse_lines(lines):
+            nonlocal next_scope
             for line in lines:
-                line = line.rstrip()  # remove trailing whitespace
+                # remove trailing whitespace
+                line = line.rstrip()
+                # get the indentation
                 indentation = len(line) - len(line.lstrip())
+                # remove whitespace from the line also on the left
                 line = line.strip()
-
+                
                 # ignore comments and empty lines
                 if line.startswith("#") or not line:
                     continue
 
                 # ignore comment part of not-empty lines and strip again
                 line, *comment = line.split("#", 1)
-                mod = line.strip()
+                line = line.strip()
                 comment = comment[0].strip() if comment else None
 
-                yield mod, indentation, comment
+                if line.startswith("[") and line.endswith("]"): 
+                    next_scope = line[1:-1].lower()
+                    continue
+
+                yield line, indentation, comment
             
         for next_mod, next_indentation, next_comment in parse_lines(file):
             
@@ -82,23 +106,23 @@ class FileManager:
                     
                 elif diff < 0:
                     # prvious line was a mod
-                    yield mod, current_categories, comment
+                    yield mod, current_categories, scope, comment
                     # remove |diff| number of categories
                     current_categories = current_categories[:diff]
                     
                 elif diff == 0:
                     # yield mod info
-                    yield mod, current_categories, comment
+                    yield mod, current_categories, scope, comment
                     
             mod = next_mod
             indentation = next_indentation
             comment = next_comment
+            scope = next_scope
             
         # Process the last line of the file
         if mod:
-            yield mod, current_categories, next_comment
+            yield mod, current_categories, scope, next_comment
             
-
     
     
     # parse 
@@ -107,17 +131,24 @@ class FileManager:
             return " " * intendation * 4
     
         # iterator over the mod_dict
-        def iterate_dict(current_dict, level = 0):
-            for key, value in current_dict.items():
+        def iterate_dict(current_dict, level = 0, next = None):
+            for key, value in current_dict.items():     
+                if next == "category":
+                    yield level, key, None
+                    yield from iterate_dict(value, level + 1)
+                elif next == "scope":
+                    yield level, "[" + key + "]", None
+                    yield from iterate_dict(value, level)
+                    
                 if key == "mods":
                     for mod in value:
                         yield level, mod["name"], mod["comment"]
                 elif key == "category":
-                    yield from iterate_dict(value, level)
+                    yield from iterate_dict(value, level, next = "category")
+                elif key == "scope":
+                    yield from iterate_dict(value, level, next = "scope")
                 else:
-                    yield level, key, None
-                    yield from iterate_dict(value, level + 1)
-                    
+                    raise ValueError(f"Unknown key: {key}")
         
         lines = []
         for level, name, comment in iterate_dict(mods):

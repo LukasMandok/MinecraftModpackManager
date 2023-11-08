@@ -19,13 +19,16 @@ class DataManager:
 
     ### private functions
     
-    def _add_mod_to_list(self, mod_list, name, categories, comment = None):
+    def _add_mod_to_list(self, mod_list, name, categories, scope, comment = None):
         mod_list[name] = {"categories"   : categories.copy(),
-                            "comment"      : comment}
+                          "comment"      : comment,
+                          "scope"         : scope}
         
-    def _add_mod_to_dict(self, mod_dict, name, categories, comment = None):
+    def _add_mod_to_dict(self, mod_dict, name, categories, scope, comment = None):
         current_dict = mod_dict
         #categories = categories or [None]
+        current_dict = current_dict.setdefault("scope", {})
+        current_dict = current_dict.setdefault(scope, {})
         for category in categories:
             current_dict = current_dict.setdefault("category", {})
             current_dict = current_dict.setdefault(category, {})
@@ -35,15 +38,28 @@ class DataManager:
 
     def _load_download_list_from_file(self):
         for mod_info in self.fileManager.load_download_list():
-            print("adding:", mod_info)
+            #print("adding:", mod_info)
             self._add_mod_to_list(self.download_list_file_list, *mod_info)
             self._add_mod_to_dict(self.download_list_file_dict, *mod_info)
+            
+        from pprint import pprint
+        print("list:")
+        pprint(self.download_list_file_list)
+        
+        print("\n\ndict:")
+        pprint(self.download_list_file_dict)
         
     def _load_download_list_from_folder(self):
         for mod_info in self.downloadManager.load_download_list():
             self._add_mod_to_list(self.download_list_folder_list, *mod_info)
             self._add_mod_to_dict(self.download_list_folder_dict, *mod_info)
         
+        from pprint import pprint
+        print("list:")
+        pprint(self.download_list_folder_list)
+        
+        print("\n\ndict:")
+        pprint(self.download_list_folder_dict)
 
     ### public functions
 

@@ -1,12 +1,18 @@
 
 class Project:
-    def __init__(self, name, type, category, subcategories, description, authors):
+    def __init__(self, name, scope, category, subcategories, description, authors):
         self.name = name
-        self.type = type
+        self.scope = scope
         self.category = category
         self.subcategories = subcategories
         self.description = description
         self.authors = authors
+        
+        # updated at later access
+        self.access_date = None
+        self.modified_date = None
+        
+        self.sources = {}
 
         self.versions = {}
 
@@ -14,7 +20,25 @@ class Project:
         return "{name}: {cat} - {desc}".format(self.name, self.category, self.description)
     
     ### Data managment
-
+    
+    ## Source Managment
+    def add_source(self, source, id, url, modified_date):
+        if source in self.sources:
+            return False
+        else:
+            # add the source to the dict
+            self.sources[source] = {"id" : id, "url" : url, "modified_date" : modified_date}
+        return True
+    
+    
+    def update_source_date(self, source, modified_date):
+        if source in self.sources:
+            self.sources[source]["modified_date"] = modified_date
+            return True
+        else:
+            return False
+        
+    ## Version Managment
     # ad a new version to the mod
     def add_version(self, version, source, id, version_id, url, filename, upload_date):
         if version in self.versions:
