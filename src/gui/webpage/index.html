@@ -1,147 +1,302 @@
-<html>
+<!DOCTYPE html>
     <head>
         <title>Index</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+        <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/projectcard.css">
+        <link rel="stylesheet" href="css/list.css">
+        <link rel="stylesheet" href="css/search.css">
+        <link rel="stylesheet" href="css/filters.css">
+        <link rel="stylesheet" href="css/versions.css">
+        <link rel="stylesheet" href="css/avatar.css">
+        <link rel="stylesheet" href="css/padding.css">
         <script type="text/javascript" src="/eel.js"></script> 
     </head>
     
     <body>
         <div class="topnav">
-            <a class="active" id="button-name">Home</a>
-            <a id="button-search">Search</a>
+            <a class="tablink active" id="button-name" onclick="openTab(event, 'tab-home')">Home</a>
+            <a class="tablink" id="button-name" onclick="openTab(event, 'tab-search')">Search</a>
+            <a class="tablink" id="button-name" onclick="openTab(event, 'tab-download')">Download</a>
         </div> 
 
-        <h1>Mod Search</h1>
+        
+        <!-- Home Tab -->
+        <div id="tab-home" class="tabcontent">
 
-        <div id="search-actions">
-            <!-- Search bar -->
-            <div id="search-bar">
-                <input type="text" id="search-input" value="Spiders 2.0"> 
-                <button onclick="search()">Search</button>
+        </div>
+
+        <!-- Search Tab -->
+        <div id="tab-search" class="tabcontent">
+            <h1>Mod Search</h1>
+
+            <div id="search-actions">
+                <!-- Search bar -->
+                <!-- <div id="search-bar">
+                    <input type="text" id="search-input" value="Spiders 2.0"> 
+                    <button onclick="search()">Search</button>
+                </div> -->
+
+                -<div id="card search-controls">
+                    <div class="search-filter-container">
+                        <div class="iconified-input">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" aria-hidden="true" data-v-4c82e277=""><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"></path></svg>
+                            <input type="text" id="search-input" value="Spiders 2.0" name="search" placeholder="Search mods..." >
+                        </div>
+                    </div>
+                    <div class="sort-controls">
+                        <!-- Sort by  -->
+                        <div class="labeled-control">
+                            <span class="labeled-control__label">Sort by:</span>
+                            <div class="multiselect search-controls__sorting labeled-control__control" tabindex="0" role="combobox">
+                                <div class="multiselect__select"></div>
+                                <div class="multiselect__tags">
+                                    <span class="multiselect__single">Download count</span>
+                                </div>
+                                <div class="multiselect__content-wrapper" tabindex="-1" style="max-height: 300px; display: none;">
+                                    <ul class="multiselect__content" style="display: inline-block;" role="listbox" id="listbox-null">
+                                        <li class="multiselect__element" id="null-0" role="option">
+                                            <span class="multiselect__option--highlight multiselect__option" data-select="" data-selected="" data-deselect="">
+                                                <span>Relevance</span>
+                                            </span>
+                                        </li>
+                                        <!-- Add more -->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Count per page -->
+                        <div class="labeled-control">
+                            <span class="labeled-control__label">Show per page</span>
+                            <div tabindex="0" class="multiselect labeled-control__control" role="combobox" aria-owns="listbox-null">
+                                <div class="multiselect__select"></div>
+                                <div class="multiselect__tags">
+                                    <div class="multiselect__tags-wrap" style="display: none;"></div>
+                                    <div class="multiselect__spinner" style="display: none;"></div>
+                                    <span class="multiselect__single">20</span>
+                                </div>
+                                <div class="multiselect__content-wrapper" tabindex="-1" style="max-height: 300px; display: none;">
+                                    <ul class="multiselect__content" style="display: inline-block;" role="listbox" id="listbox-null">
+                                        <li class="multiselect__element" id="null-0" role="option">
+                                            <span class="multiselect__option--highlight multiselect__option" data-select="" data-selected="" data-deselect="">
+                                                <span>5</span>
+                                            </span>
+                                        </li>
+                                        <!-- Add more -->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Toggle Display Mode -->
+                        <button class="square-button v-popper--has-tooltip">
+                            <svg data-v-4c82e277="" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M3 14h7v7H3zM3 3h7v7H3zM14 4h7M14 9h7M14 15h7M14 20h7"></path></svg>
+                        </button>
+                    </div>
+                </div>
+
+
+                <!-- Pageination -->
+                <div class="columns paginates paginateion-before">
+
+                </div>
+            
+
+                <!-- Search Filters -->
+                <div id="filter-bar">
+                    <!-- <div class="filter-options" id="filter-options1"></div>
+                        <div class="filter-dropdown">
+                            <button class="filter-dropdown-button">Select Options</button>
+                            <div class="filter-dropdown-content">
+                                <label class="filter-label" for="filter-options1-1">
+                                    <input type="checkbox" id="filter-options1-1"> Option 1
+                                </label>
+                                <label class="filter-label" for="filter-options1-2">
+                                    <input type="checkbox" id="filter-options1-2"> Option 2
+                                </label>
+                                <label class="filter-label" for="filter-options1-3">
+                                    <input type="checkbox" id="filter-options1-3"> Option 3
+                                </label>
+                                <label class="filter-label" for="filter-options1-4">
+                                    <input type="checkbox" id="filter-options1-4"> Option 4
+                                </label>
+                            </div>
+                        </div>
+                        <div class="filter-selected-options" id="filter-selected-options1">
+                
+                        </div>
+                    </div>
+
+                    <div class="filter-options" id="filter-options2"></div>
+                        <div class="filter-dropdown">
+                            <button class="filter-dropdown-button">Select Options</button>
+                            <div class="filter-dropdown-content">
+                                <label class="filter-label" for="filter-options2-1">
+                                    <input type="checkbox" id="filter-options2-1"> Option 1
+                                </label>
+                                <label class="filter-label" for="filter-options2-2">
+                                    <input type="checkbox" id="filter-options2-2"> Option 2
+                                </label>
+                                <label class="filter-label" for="filter-options2-3">
+                                    <input type="checkbox" id="filter-options2-3"> Option 3
+                                </label>
+                                <label class="filter-label" for="filter-options2-4">
+                                    <input type="checkbox" id="filter-options2-4"> Option 4
+                                </label>
+                            </div>
+                        </div>
+                        <div class="filter-selected-options" id="filter-selected-options2">
+                            
+                        </div>
+                    </div> -->
+                </div>                  
             </div>
 
-            <!-- Search Filters -->
-            <div id="filter-bar">
-                <!-- <div class="filter-options" id="filter-options1"></div>
-                    <div class="filter-dropdown">
-                        <button class="filter-dropdown-button">Select Options</button>
-                        <div class="filter-dropdown-content">
-                            <label class="filter-label" for="filter-options1-1">
-                                <input type="checkbox" id="filter-options1-1"> Option 1
-                            </label>
-                            <label class="filter-label" for="filter-options1-2">
-                                <input type="checkbox" id="filter-options1-2"> Option 2
-                            </label>
-                            <label class="filter-label" for="filter-options1-3">
-                                <input type="checkbox" id="filter-options1-3"> Option 3
-                            </label>
-                            <label class="filter-label" for="filter-options1-4">
-                                <input type="checkbox" id="filter-options1-4"> Option 4
-                            </label>
+            <!-- Search results -->
+            <div class="search-results-container">
+                <div class="project-list display-mode--list padding-sm" role="list" id="search-container-1">
+                    <!-- This is a template structure for a single result, replicate for each search result -->
+                    <div class="search-item">
+                        <img src="path_to_icon.png" alt="Mod Icon" class="mod-icon">
+                        <div class="mod-info">
+                            <h2 class="mod-title">Mod Title Here</h2>
+                            <p class="mod-desc">Short description here...</p>
+                            <div class="mod-details">
+                                <span>Modloader: Fabric</span> <!-- or Forge etc. -->
+                                <span>Newest Version: 1.17</span>
+                                <span>Available on: Curseforge</span>
+                                <!-- Add more details as needed -->
+                            </div>
                         </div>
                     </div>
-                    <div class="filter-selected-options" id="filter-selected-options1">
-            
+                    <!-- Repeat .result-item for each result -->
+                </div>      
+                <div class="project-list display-mode--list padding-sm" role="list" id="search-container-2">
+                    <!-- This is a template structure for a single result, replicate for each search result -->
+                    <div class="search-item">
+                        <img src="path_to_icon.png" alt="Mod Icon" class="mod-icon">
+                        <div class="mod-info">
+                            <h2 class="mod-title">Mod Title Here</h2>
+                            <p class="mod-desc">This is a much longer description as the other one has. So I want to make it flow over. Which is kind of not implemented yet.</p>
+                            <div class="mod-details">
+                                <span>Modloader: Fabric</span> <!-- or Forge etc. -->
+                                <span>Newest Version: 1.17</span>
+                                <span>Available on: Curseforge</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                    <!-- Repeat .result-item for each result -->
+                </div>      
+            </div>
+            <div style="width: 100px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true" data-v-693a4de1=""><circle cx="12" cy="12" r="10"></circle><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                
+                <svg xml:space="preserve" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="1.5" clip-rule="evenodd" viewBox="0 0 24 24">
+                    <path fill="none" d="M0 0h24v24H0z"></path>
+                    <path fill="none" stroke="currentColor" stroke-width="2" d="M2 7.5h8v-2h12v2s-7 3.4-7 6 3.1 3.1 3.1 3.1l.9 3.9H5l1-4.1s3.8.1 4-2.9c.2-2.7-6.5-.7-8-6Z"></path>
+                </svg>
 
-                <div class="filter-options" id="filter-options2"></div>
-                    <div class="filter-dropdown">
-                        <button class="filter-dropdown-button">Select Options</button>
-                        <div class="filter-dropdown-content">
-                            <label class="filter-label" for="filter-options2-1">
-                                <input type="checkbox" id="filter-options2-1"> Option 1
-                            </label>
-                            <label class="filter-label" for="filter-options2-2">
-                                <input type="checkbox" id="filter-options2-2"> Option 2
-                            </label>
-                            <label class="filter-label" for="filter-options2-3">
-                                <input type="checkbox" id="filter-options2-3"> Option 3
-                            </label>
-                            <label class="filter-label" for="filter-options2-4">
-                                <input type="checkbox" id="filter-options2-4"> Option 4
-                            </label>
-                        </div>
-                    </div>
-                    <div class="filter-selected-options" id="filter-selected-options2">
-                        
-                    </div>
-                </div> -->
-            </div>                  
-        </div>
-
-        <!-- Search results -->
-        <div class="search-results-container">
-            <div class="search-container" id="search-container-1">
-                <!-- This is a template structure for a single result, replicate for each search result -->
-                <div class="search-item">
-                    <img src="path_to_icon.png" alt="Mod Icon" class="mod-icon">
-                    <div class="mod-info">
-                        <h2 class="mod-title">Mod Title Here</h2>
-                        <p class="mod-desc">Short description here...</p>
-                        <div class="mod-details">
-                            <span>Modloader: Fabric</span> <!-- or Forge etc. -->
-                            <span>Newest Version: 1.17</span>
-                            <span>Available on: Curseforge</span>
-                            <!-- Add more details as needed -->
-                        </div>
-                    </div>
-                </div>
-                <!-- Repeat .result-item for each result -->
-            </div>      
-            <div class="search-container" id="search-container-2">
-                <!-- This is a template structure for a single result, replicate for each search result -->
-                <div class="search-item">
-                    <img src="path_to_icon.png" alt="Mod Icon" class="mod-icon">
-                    <div class="mod-info">
-                        <h2 class="mod-title">Mod Title Here</h2>
-                        <p class="mod-desc">This is a much longer description as the other one has. So I want to make it flow over. Which is kind of not implemented yet.</p>
-                        <div class="mod-details">
-                            <span>Modloader: Fabric</span> <!-- or Forge etc. -->
-                            <span>Newest Version: 1.17</span>
-                            <span>Available on: Curseforge</span>
-                            <!-- Add more details as needed -->
-                        </div>
-                    </div>
-                </div>
-                <!-- Repeat .result-item for each result -->
-            </div>      
-        </div>
-        <div style="width: 100px;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true" data-v-693a4de1=""><circle cx="12" cy="12" r="10"></circle><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-            
-            <svg xml:space="preserve" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="1.5" clip-rule="evenodd" viewBox="0 0 24 24">
+                <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round" clip-rule="evenodd" viewBox="0 0 24 24">
                 <path fill="none" d="M0 0h24v24H0z"></path>
-                <path fill="none" stroke="currentColor" stroke-width="2" d="M2 7.5h8v-2h12v2s-7 3.4-7 6 3.1 3.1 3.1 3.1l.9 3.9H5l1-4.1s3.8.1 4-2.9c.2-2.7-6.5-.7-8-6Z"></path>
-            </svg>
+                <path fill="none" stroke="currentColor" stroke-width="23" d="m820 761-85.6-87.6c-4.6-4.7-10.4-9.6-25.9 1-19.9 13.6-8.4 21.9-5.2 25.4 8.2 9 84.1 89 97.2 104 2.5 2.8-20.3-22.5-6.5-39.7 5.4-7 18-12 26-3 6.5 7.3 10.7 18-3.4 29.7-24.7 20.4-102 82.4-127 103-12.5 10.3-28.5 2.3-35.8-6-7.5-8.9-30.6-34.6-51.3-58.2-5.5-6.3-4.1-19.6 2.3-25 35-30.3 91.9-73.8 111.9-90.8" transform="matrix(.08671 0 0 .0867 -49.8 -56)"></path>
+                </svg>
 
-            <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round" clip-rule="evenodd" viewBox="0 0 24 24">
-            <path fill="none" d="M0 0h24v24H0z"></path>
-            <path fill="none" stroke="currentColor" stroke-width="23" d="m820 761-85.6-87.6c-4.6-4.7-10.4-9.6-25.9 1-19.9 13.6-8.4 21.9-5.2 25.4 8.2 9 84.1 89 97.2 104 2.5 2.8-20.3-22.5-6.5-39.7 5.4-7 18-12 26-3 6.5 7.3 10.7 18-3.4 29.7-24.7 20.4-102 82.4-127 103-12.5 10.3-28.5 2.3-35.8-6-7.5-8.9-30.6-34.6-51.3-58.2-5.5-6.3-4.1-19.6 2.3-25 35-30.3 91.9-73.8 111.9-90.8" transform="matrix(.08671 0 0 .0867 -49.8 -56)"></path>
-            </svg>
+                <svg xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="2" clip-rule="evenodd" viewBox="0 0 24 24">
+                    <defs>
+                        <path id="quilt" fill="none" stroke="currentColor" stroke-width="65.6" d="M442.5 233.9c0-6.4-5.2-11.6-11.6-11.6h-197c-6.4 0-11.6 5.2-11.6 11.6v197c0 6.4 5.2 11.6 11.6 11.6h197c6.4 0 11.6-5.2 11.6-11.7v-197Z"></path>
+                    </defs>
+                    <path fill="none" d="M0 0h24v24H0z"></path>
+                    <use xlink:href="#quilt" stroke-width="65.6" transform="matrix(.03053 0 0 .03046 -3.2 -3.2)"></use>
+                    <use xlink:href="#quilt" stroke-width="65.6" transform="matrix(.03053 0 0 .03046 -3.2 7)"></use>
+                    <use xlink:href="#quilt" stroke-width="65.6" transform="matrix(.03053 0 0 .03046 6.9 -3.2)"></use>
+                    <path fill="none" stroke="currentColor" stroke-width="70.4" d="M442.5 234.8c0-7-5.6-12.5-12.5-12.5H234.7c-6.8 0-12.4 5.6-12.4 12.5V430c0 6.9 5.6 12.5 12.4 12.5H430c6.9 0 12.5-5.6 12.5-12.5V234.8Z" transform="rotate(45 3.5 24) scale(.02843 .02835)"></path>
+                </svg>  
 
-            <svg xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="2" clip-rule="evenodd" viewBox="0 0 24 24">
-                <defs>
-                    <path id="quilt" fill="none" stroke="currentColor" stroke-width="65.6" d="M442.5 233.9c0-6.4-5.2-11.6-11.6-11.6h-197c-6.4 0-11.6 5.2-11.6 11.6v197c0 6.4 5.2 11.6 11.6 11.6h197c6.4 0 11.6-5.2 11.6-11.7v-197Z"></path>
-                </defs>
-                <path fill="none" d="M0 0h24v24H0z"></path>
-                <use xlink:href="#quilt" stroke-width="65.6" transform="matrix(.03053 0 0 .03046 -3.2 -3.2)"></use>
-                <use xlink:href="#quilt" stroke-width="65.6" transform="matrix(.03053 0 0 .03046 -3.2 7)"></use>
-                <use xlink:href="#quilt" stroke-width="65.6" transform="matrix(.03053 0 0 .03046 6.9 -3.2)"></use>
-                <path fill="none" stroke="currentColor" stroke-width="70.4" d="M442.5 234.8c0-7-5.6-12.5-12.5-12.5H234.7c-6.8 0-12.4 5.6-12.4 12.5V430c0 6.9 5.6 12.5 12.4 12.5H430c6.9 0 12.5-5.6 12.5-12.5V234.8Z" transform="rotate(45 3.5 24) scale(.02843 .02835)"></path>
-            </svg>  
+                <svg enable-background="new 0 0 24 24" version="1.1" viewBox="0 0 24 24" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="m12 19.2v2m0-2v2"></path><path d="m8.4 1.3c0.5 1.5 0.7 3 0.1 4.6-0.2 0.5-0.9 1.5-1.6 1.5m8.7-6.1c-0.5 1.5-0.7 3-0.1 4.6 0.2 0.6 0.9 1.5 1.6 1.5"></path><path d="m3.6 15.8h-1.7m18.5 0h1.7"></path><path d="m3.2 12.1h-1.7m19.3 0h1.8"></path><path d="m8.1 12.7v1.6m7.8-1.6v1.6"></path><path d="m10.8 18h1.2m0 1.2-1.2-1.2m2.4 0h-1.2m0 1.2 1.2-1.2"></path><path d="m4 9.7c-0.5 1.2-0.8 2.4-0.8 3.7 0 3.1 2.9 6.3 5.3 8.2 0.9 0.7 2.2 1.1 3.4 1.1m0.1-17.8c-1.1 0-2.1 0.2-3.2 0.7m11.2 4.1c0.5 1.2 0.8 2.4 0.8 3.7 0 3.1-2.9 6.3-5.3 8.2-0.9 0.7-2.2 1.1-3.4 1.1m-0.1-17.8c1.1 0 2.1 0.2 3.2 0.7"></path><path d="m4 9.7c-0.2-1.8-0.3-3.7 0.5-5.5s2.2-2.6 3.9-3m11.6 8.5c0.2-1.9 0.3-3.7-0.5-5.5s-2.2-2.6-3.9-3"></path><path d="m12 21.2-2.4 0.4m2.4-0.4 2.4 0.4"></path></g></svg>
 
-            <svg enable-background="new 0 0 24 24" version="1.1" viewBox="0 0 24 24" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="m12 19.2v2m0-2v2"></path><path d="m8.4 1.3c0.5 1.5 0.7 3 0.1 4.6-0.2 0.5-0.9 1.5-1.6 1.5m8.7-6.1c-0.5 1.5-0.7 3-0.1 4.6 0.2 0.6 0.9 1.5 1.6 1.5"></path><path d="m3.6 15.8h-1.7m18.5 0h1.7"></path><path d="m3.2 12.1h-1.7m19.3 0h1.8"></path><path d="m8.1 12.7v1.6m7.8-1.6v1.6"></path><path d="m10.8 18h1.2m0 1.2-1.2-1.2m2.4 0h-1.2m0 1.2 1.2-1.2"></path><path d="m4 9.7c-0.5 1.2-0.8 2.4-0.8 3.7 0 3.1 2.9 6.3 5.3 8.2 0.9 0.7 2.2 1.1 3.4 1.1m0.1-17.8c-1.1 0-2.1 0.2-3.2 0.7m11.2 4.1c0.5 1.2 0.8 2.4 0.8 3.7 0 3.1-2.9 6.3-5.3 8.2-0.9 0.7-2.2 1.1-3.4 1.1m-0.1-17.8c1.1 0 2.1 0.2 3.2 0.7"></path><path d="m4 9.7c-0.2-1.8-0.3-3.7 0.5-5.5s2.2-2.6 3.9-3m11.6 8.5c0.2-1.9 0.3-3.7-0.5-5.5s-2.2-2.6-3.9-3"></path><path d="m12 21.2-2.4 0.4m2.4-0.4 2.4 0.4"></path></g></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" data-v-693a4de1=""><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17 9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2z"></path></svg>
 
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" data-v-693a4de1=""><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17 9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2z"></path></svg>
-
-            
+                
+            </div>
         </div>  
+
+        <!-- Download Tab -->
+        <div id="tab-download" class="tabcontent">
+            <h1>Mod Download</h1>
+            <div id="download-actions">
+                <button onclick="request_download_list()">Show Download File</button>
+                <button onclick="request_downloaded_list()">Show Downloaded Content</button>
+                <div class="search-results-container">
+                    <div class="project-list"> <!-- display-mode--grid  -> leads to  -->
+                        <div class="project-card base-card category level-0 padding-sm" id="scope1">
+                            <span class="category-label">serverside</span>
+                        </div>
+                        <div class="category-container level-0" parent="scope1">
+                            <div class="project-card base-card category padding-sm" id="category1">
+                                <span class="category-label">category 1</span>
+                                <div class="multiselect__select"></div>
+                            </div>
+                            <div class="category-container level-1" parent="category1">
+                                <div class="project-card base-card category padding-sm" id="subcategory1">
+                                    <span class="category-label">subcategory 1.11</span>
+                                    <div class="multiselect__select"></div>
+                                </div>
+                                <div class="category-container level-1" parent="subcategory1">
+                                    <div class="project-card base-card project padding-sm">
+                                        <span class="project-label">project name 1.1.1</span>
+                                    </div>  
+                                    <div class="project-card base-card project padding-sm">
+                                        <span class="project-label">project name 1.1.2</span>
+                                    </div>  
+
+                                    <div class="project-card base-card category padding-sm" id="subsubcategory1">
+                                        <span class="category-label">subsubcategory 1.1.1</span>
+                                    </div>
+                                    <div class="category-container level-1" parent="subsubcategory1">
+                                        <div class="project-card base-card project padding-sm">
+                                            <span class="project-label">project name 1.1.1.1</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="project-card base-card category padding-sm" id="subcategory1">
+                                    <span class="category-label">subcategory 1.11</span>
+                                </div>
+                                <div class="category-container level-1" parent="subcategory1">
+                                    <div class="project-card base-card project padding-sm selected">
+                                        <span class="project-label">project name 1.1.1</span>
+                                    </div>  
+                                    <div class="project-card base-card project padding-sm selected">
+                                        <span class="project-label">project name 1.1.2</span>
+                                    </div>  
+                                </div>
+                            </div>  
+                            <div class="project-card base-card category padding-sm" id="category3">
+                                <span class="category-label">category 2</span>
+                            </div>
+                            <div class="category-container level-1" parent="category3">
+                                <div class="project-card base-card category padding-sm" id="subcategory2">
+                                    <span class="category-label">subcategory 2.1</span>
+                                </div>
+                                <div class="category-container level-1" parent="subcategory2">
+                                    <div class="project-card base-card project padding-sm deactivated">
+                                        <span class="project-label">project name 2.1.1</span>
+                                    </div>  
+                                    <div class="project-card base-card project padding-sm">
+                                        <span class="project-label">project name 2.1.2</span>
+                                    </div>  
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
     
     <script src="js/main.js"></script>
+    <script src="js/list.js"></script>
+    <script src="js/search.js"></script>
     <script src="eel.js"></script>
 </html>

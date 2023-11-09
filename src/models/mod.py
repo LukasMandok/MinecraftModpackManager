@@ -1,8 +1,8 @@
 
 class Project:
-    def __init__(self, name, scope, category, subcategories, description, authors):
+    def __init__(self, name, project_type, category, subcategories, description, authors):
         self.name = name
-        self.scope = scope
+        self.type = project_type
         self.category = category
         self.subcategories = subcategories
         self.description = description
@@ -22,12 +22,12 @@ class Project:
     ### Data managment
     
     ## Source Managment
-    def add_source(self, source, id, url, modified_date):
+    def add_source(self, source, id, url, modified_date, data):
         if source in self.sources:
             return False
         else:
             # add the source to the dict
-            self.sources[source] = {"id" : id, "url" : url, "modified_date" : modified_date}
+            self.sources[source] = {"id" : id, "url" : url, "modified_date" : modified_date, "data" : data}
         return True
     
     
@@ -40,15 +40,15 @@ class Project:
         
     ## Version Managment
     # ad a new version to the mod
-    def add_version(self, version, source, id, version_id, url, filename, upload_date):
-        if version in self.versions:
-            if source in self.versions[version]["sources"]:
+    def add_version(self, game_version, source, id, version_id, url, filename, upload_date):
+        if game_version in self.versions:
+            if source in self.versions[game_version]["sources"]:
                 return False
             else:
                 # add the source to the dict
-                self.versions[version]["sources"][source] = {"id" : id, "version_id" : version_id, "url" : url, "filename" : filename, "upload_date" : upload_date}
+                self.versions[game_version]["sources"][source] = {"id" : id, "version_id" : version_id, "url" : url, "filename" : filename, "upload_date" : upload_date}
         else:
-            self.versions[version] = {"sources" : {source: {"id" : id, "version_id" : version_id, "url" : url, "filename" : filename, "upload_date" : upload_date}}}
+            self.versions[game_version] = {"sources" : {source: {"id" : id, "version_id" : version_id, "url" : url, "filename" : filename, "upload_date" : upload_date}}}
         return True
 
 
@@ -107,3 +107,4 @@ class Mod(Project):
         return True
 
 
+    

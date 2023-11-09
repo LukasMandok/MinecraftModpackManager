@@ -1,18 +1,5 @@
 from .constants import *
-    
-### Mod Info stuff
-        
-class ModList(list):
-    def __init__(self, mods: list = []):
-        super().__init__(mods)
-                
-    def get_names(self):
-        return [mod.name for mod in self]
-        
-    def to_dict(self):
-        return [mod.to_dict() for mod in self]        
-        
-        
+            
 
 ### GameVersion
 

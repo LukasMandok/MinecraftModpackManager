@@ -1,6 +1,7 @@
-from typing import overload
 import eel
+import asyncio
 import os
+import json
 
 from ..models.constants import Sources
 
@@ -30,15 +31,15 @@ class Application:
             raise ValueError("Manager not set!")
 
         self.eel.init(self.html_dir)
+
+        # exposing functions to javascript
         self.eel.expose(self.get_mod_search_results)
+        self.eel.expose(self.request_download_list)
+        self.eel.expose(self.request_downloaded_list)
+        
         self.eel.start(self.html_file, size=(500, 500), mode='firefox', close_callback=self.close_callback)
     
-    # @overload
-    # def get_mod_search_results(self, name: str):
-    #     #self.eel.prompt_alerts("Searching for project: " + name)
-    #     return self.manager.get_mod_search_results(name)
-    
-    # @overload
+    ### exposed to javascript
     def get_mod_search_results(self, name: str, source: str):
         
         source_enum = Sources.get_valid_source(source)   
@@ -47,3 +48,22 @@ class Application:
         
         search_results = self.app_manager.get_mod_search_results(name, source = source_enum)
         return search_results
+    
+    def request_download_list(self):
+        # for execution of async function -> put in event lop:
+        # asyncio.run(self.app_manager.create_download_list())
+        # TODO: make this async again
+        self.app_manager.create_download_list()
+        
+    def request_downloaded_list(self):
+        # TODO: Implement
+        pass
+        
+    ### calling functions exposed in javascript
+    def send_download_list(self, download_list):
+        json_dict = json.dumps(download_list, default=str)
+        self.eel.receive_download_list(json_dict)
+        
+    def update_download_list(self, update):
+        # TODO: implement
+        self.eel.update_download_list(update)

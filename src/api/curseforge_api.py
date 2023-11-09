@@ -242,10 +242,10 @@ class CurseForgeAPI(BaseAPI): #, HighLevelAPI
         icon        = data['logo']['url'] if 'logo' in data and data['logo'] else None
         downloads   = data['downloadCount']
         
-        project_info= data
+        #project_info= data
         
         # Creating the Mod object
-        mod_info = SourceModInfo(source, id, name, slug, description, categories, authors, updated, icon, downloads, color, project_info)
+        mod_info = SourceModInfo(source, id, name, slug, description, categories, authors, updated, icon, downloads, color) #project_info)
 
         # Extracting additional details
         mod_info.add_details(

@@ -1,6 +1,6 @@
 class SourceProjectInfo:
     def __init__(self, source, id, name, slug, description, categories = [], authors = [],
-                 updated = "", icon = "", downloads = 0, color = None, project_type = None, old_project_data = None):
+                 updated = "", icon = "", downloads = 0, color = None, project_type = None): #, old_project_data = None
         self.source      = source
         self.id          = str(id)
         self.name        = name
@@ -14,8 +14,8 @@ class SourceProjectInfo:
         self.color       = color
         
         # TODO: remove in case this is not needed (adding information at an earlier stage)
-        self.type        = project_type
-        self.old_project_data = old_project_data
+        self.type             = project_type
+        #self.old_project_data = old_project_data
 
         self.api              = None
         self.links            = {}
@@ -111,13 +111,13 @@ class SourceProjectInfo:
         
 class SourceModInfo(SourceProjectInfo):
     def __init__(self, source, id, name, slug, description, categories = [], authors = [],
-                 updated = "", icon = "", downloads = 0, color = None, project_info = None):
+                 updated = "", icon = "", downloads = 0, color = None, project_type = "mod"): #  project_info = None
         
         self.mod_loaders    = None
         project_type        = "mod"
         self.loader_dict    = None
         
-        super().__init__(source, id, name, slug, description, categories, authors, updated, icon, downloads, color, project_type, project_info)
+        super().__init__(source, id, name, slug, description, categories, authors, updated, icon, downloads, color, project_type)
         
     def add_details(self, mod_loaders, recent_version, client_side = None, server_side = None):
         super().add_details(recent_version, client_side, server_side)
@@ -169,3 +169,15 @@ class SharedSourceModInfo:
                 return_list.append(None)
                 
         return return_list
+
+
+
+class ModInfoList(list):
+    def __init__(self, mods: list = []):
+        super().__init__(mods)
+                
+    def get_names(self):
+        return [mod.name for mod in self]
+        
+    def to_dict(self):
+        return [mod.to_dict() for mod in self]      

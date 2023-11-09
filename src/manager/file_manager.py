@@ -9,16 +9,17 @@ class FileManager:
         self.mod_list_file = config.mod_list_file
         self.download_list_file = config.download_list_file
 
+    ### public methods
         
     # Json Mod List
-    def _load_mod_list(self):
+    def load_mod_list(self):
         # create the file if it doesn't exist
-        if not os.path.exists(self.file_path):
-            with open(self.file_path, 'w') as f:
+        if not os.path.exists(self.mod_list_file):
+            with open(self.mod_list_file, 'w') as f:
                 json.dump({"mods": {}}, f)
 
         try:
-            with open(self.file_path, 'r') as f:
+            with open(self.mod_list_file, 'r') as f:
                 data = json.load(f)
         except json.JSONDecodeError:
             # the file is corrupt, so we'll just start fresh
@@ -27,8 +28,8 @@ class FileManager:
         return data
 
 
-    def _save_mod_list(self, data):
-        with open(self.file_path, 'w') as f:
+    def save_mod_list(self, data):
+        with open(self.mod_list_file, 'w') as f:
             json.dump(data, f)
             f.flush()
             os.fsync(f.fileno())
@@ -37,7 +38,7 @@ class FileManager:
 
     # Txt download List
     def save_download_list(self, mod_list):
-        lines = self.generate_download_file(mod_list)
+        lines = self._generate_download_file(mod_list)
         try:
             with open(self.download_list_file, 'w') as file:
                 file.writelines(lines)
@@ -48,14 +49,16 @@ class FileManager:
     def load_download_list(self):
         try:
             with open(self.download_list_file, 'r') as file:
-                yield from self.parse_download_file(file)
+                yield from self._parse_download_file(file)
         except OSError as error:
             print(f'Error: {error}')
             exit(1)
     
     
+    ### private methods
+    
     @staticmethod
-    def parse_download_file(file):    
+    def _parse_download_file(file):    
         current_categories = []
         indentation = 0
         mod = None
@@ -126,7 +129,7 @@ class FileManager:
     
     
     # parse 
-    def generate_download_file(mods):        
+    def _generate_download_file(mods):        
         def get_spaces(intendation):
             return " " * intendation * 4
     

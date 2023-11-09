@@ -1,5 +1,5 @@
 from .. import utils
-from ..models import formats
+from ..models.mod_info import SourceProjectInfo, ModInfoList
 
 from pprint import pprint
 
@@ -14,9 +14,8 @@ class HighLevelAPI():
     
     
     ### 
-    def retrieve_versions(self, project_info: "SourceProjectInfo"):
+    def retrieve_versions(self, project_info: SourceProjectInfo):
         #pprint("high_level_api - retrieve_versions - project_info: ")
-        #pprint(project_info.old_project_data)
         id = project_info.id
         
         print("high_level_api - retrieve_versions - id: ", id)
@@ -46,7 +45,7 @@ class HighLevelAPI():
 
         
     ### Specific access
-    def get_best_results_by_score(self, search_results, name, count = 5):
+    def get_best_results_by_score(self, search_results : list[str], name : str, count : int = 5):
         # get the titles of the results
         titles = [item[self.api.name_tag] for item in search_results]
 
@@ -67,33 +66,33 @@ class HighLevelAPI():
         ids = [item[self.search_id_tag] for item in search_results]
         
         # make api request to retrieve mod details
-        projects = self.api.get_projects(ids)
+        projects_info = self.api.get_projects(ids)
         
         # sort projects, if retrieved in wrong order
-        ids_unsorted = [project[self.id_tag] for project in projects]
-        sorted_projects = projects
+        ids_unsorted = [project[self.id_tag] for project in projects_info]
+        sorted_projects_info = projects_info
         if ids != ids_unsorted:
             #print("projects in worng order - sorting ...")
             sorting = [ids_unsorted.index(id) for id in ids]
-            sorted_projects = [projects[index] for index in sorting]
+            sorted_projects_info = [projects_info[index] for index in sorting]
         
-        return sorted_projects
+        return sorted_projects_info
     
     
-    def convert_projects_to_mods(self, projects):
-        mods = formats.ModList()
-        for project in projects:
+    def convert_projects_to_mods(self, projects_info: SourceProjectInfo):
+        mod_info_list = ModInfoList()
+        for project_info in projects_info:
             # use api's extraction function to convert project to mod format
-            full_project = self.api.add_missing_project_info(project)
-            mod_info = self.api.extract_data(full_project)
+            full_project_info = self.api.add_missing_project_info(project_info)
+            mod_info = self.api.extract_data(full_project_info)
             
             mod_info.add_api(self)
             
             # NOTE: add_version_data can be called here, maybe
             
-            mods.append(mod_info)
+            mod_info_list.append(mod_info)
             
-        return mods
+        return mod_info_list
     
     
     ### USE API TO retrieve Search Results
@@ -110,18 +109,18 @@ class HighLevelAPI():
         
         best_projects = self.retrieve_project_details(best_search)
         
-        mods = self.convert_projects_to_mods(best_projects)
+        mod_info_list = self.convert_projects_to_mods(best_projects)
             
-        return mods, scores
+        return mod_info_list, scores
     
     # find best matching mod for given name
     def find_best_matching_mod(self, name):
-        mod_list, score_list = self.get_best_mods_search(name, versions=None, loader=None, count = 1)
+        mod_info_list, score_list = self.get_best_mods_search(name, versions=None, loader=None, count = 1)
         
-        mod = None
+        mod_info = None
         score = None
-        if mod_list is not None and len(mod_list) > 0:
-            mod = mod_list[0]
+        if mod_info_list is not None and len(mod_info_list) > 0:
+            mod_info = mod_info_list[0]
             score = score_list[0]
             
-        return mod, score
+        return mod_info, score

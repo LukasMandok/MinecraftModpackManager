@@ -18,8 +18,8 @@ def main():
     # Create an instance of the GUI 
     app = gui.Application()
 
-    # Create an instance of the Download Manager
-    manager = application_manager.ApplicationManager()
+    # Create an instance of the Application Manager
+    manager = application_manager.ApplicationManager(app)
 
     app.set_application_manager(manager)
 

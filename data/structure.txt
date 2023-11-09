@@ -26,10 +26,11 @@ type (mods / texturepacks / resourcepacks / shaders):
     used_version
     usedmodLoader
     downloaded
-        version
+        game_version
             mod_loader
                 download_name
                 provider
+                version
     dependencies (modlist)
     not_compatible (mod list)
     

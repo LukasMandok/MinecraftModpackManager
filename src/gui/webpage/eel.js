@@ -19,6 +19,14 @@ function search() {
     eel.get_mod_search_results(input, "curseforge")((results) => handleSearchResults(results, 2));
 }
 
+function request_download_list() {
+    eel.request_download_list()
+}
+
+function request_downloaded_list() {
+    eel.request_downloaded_list()
+}
+
 // TODO: dynamically create the search filters from websites
 create_filter(["Filter1_Option1", "Filter1_Option2", "Filter1_Option3"])
 create_filter(["Filter2_Option1", "Filter2_Option2", "Filter2_Option3", "Filter2_Option4"])
@@ -27,7 +35,13 @@ create_filter(["Filter2_Option1", "Filter2_Option2", "Filter2_Option3", "Filter2
 // Exposed javascript functions
 
 eel.expose(prompt_alerts);
+eel.expose(receive_download_list);
 
 function prompt_alerts(description) {
     alert(description);
+}
+
+function receive_download_list(download_list){
+    // TODO: implement 
+    console.log(download_list);
 }

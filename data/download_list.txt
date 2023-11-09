@@ -10,12 +10,11 @@ Content
 
 [Server]
 World
-    General World Mod 1
+    Terralith
     Generation
-        Terralith
+        Nullscape
 
-        Structory # This is probably a data
         Incendium
     Strucutres
-        Pillager Outposts
-    General World Mod 2
+        Structory # This is probably a data
+    

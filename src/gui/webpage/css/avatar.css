@@ -1,0 +1,47 @@
+@import url('variables.css');
+
+.avatar {
+    background-color:var(--color-button-bg);
+    border-radius:var(--size-rounded-icon);
+    box-shadow:var(--shadow-inset-lg),var(--shadow-card);
+    height:var(--size);
+    -o-object-fit:contain;
+    object-fit:contain;
+    width:var(--size)
+}
+.avatar.size-xxs {
+    --size:1.25rem
+}
+.avatar.size-xs, .avatar.size-xxs {
+    border-radius:var(--size-rounded-sm);
+    box-shadow:var(--shadow-inset),var(--shadow-card)
+}
+.avatar.size-xs {
+    --size:2.5rem
+}
+.avatar.size-sm {
+    --size:3rem;
+    border-radius:var(--size-rounded-sm);
+    box-shadow:var(--shadow-inset),var(--shadow-card)
+}
+.avatar.size-md {
+    --size:6rem
+}
+.avatar.size-lg, .avatar.size-md {
+    border-radius:var(--size-rounded-lg)
+}
+.avatar.size-lg {
+    --size:9rem
+}
+.avatar.circle {
+    border-radius:50%
+}
+.avatar.no-shadow {
+    box-shadow:none
+}
+.avatar.pixelated {
+    image-rendering:pixelated
+}
+.avatar.raised {
+    background-color:var(--color-raised-bg)
+}

@@ -1,0 +1,118 @@
+@import url('variables.css');
+
+.drop-area[data-v-43538bcf] {
+    background-color:#00000080;
+    display:flex;
+    height:100%;
+    left:0;
+    position:fixed;
+    top:0;
+    transition:visibility .2s ease-in-out,background-color .1s ease-in-out;
+    visibility:hidden;
+    width:100%;
+    z-index:10
+}
+.drop-area[data-v-43538bcf]:before {
+    --indent:4rem;
+    border:.25rem dashed var(--color-button-bg);
+    border-radius:1rem;
+    content:" ";
+    height:calc(100% - var(--indent)*2);
+    left:var(--indent);
+    position:relative;
+    top:var(--indent);
+    width:calc(100% - var(--indent)*2)
+}
+.header-buttons[data-v-7217db6b] {
+    align-items:center;
+    display:flex;
+    gap:1rem
+}
+.header-buttons .indicator[data-v-7217db6b] {
+    align-items:center;
+    color:var(--color-text-inactive);
+    display:flex;
+    gap:.5ch
+}
+.all-versions[data-v-7217db6b] {
+    display:flex;
+    flex-direction:column
+}
+.all-versions .header[data-v-7217db6b] {
+    color:var(--color-text-dark);
+    -moz-column-gap:var(--spacing-card-sm);
+    column-gap:var(--spacing-card-sm);
+    display:grid;
+    font-size:var(--font-size-md);
+    font-weight:700;
+    grid-template:"download title supports stats";
+    grid-template-columns:calc(2.25rem + var(--spacing-card-sm)) 1.25fr 1fr 1fr;
+    justify-content:left;
+    margin-inline:var(--spacing-card-md);
+    margin-bottom:var(--spacing-card-sm)
+}
+.all-versions .header div[data-v-7217db6b]:first-child {
+    grid-area:download
+}
+.all-versions .header div[data-v-7217db6b]:nth-child(2) {
+    grid-area:title
+}
+.all-versions .header div[data-v-7217db6b]:nth-child(3) {
+    grid-area:supports
+}
+.all-versions .header div[data-v-7217db6b]:nth-child(4) {
+    grid-area:stats
+}
+.all-versions .version-button[data-v-7217db6b] {
+    -moz-column-gap:var(--spacing-card-sm);
+    column-gap:var(--spacing-card-sm);
+    display:grid;
+    grid-template:"download title supports stats" "download metadata supports stats" "download dummy supports stats";
+    grid-template-columns:calc(2.25rem + var(--spacing-card-sm)) 1.25fr 1fr 1fr;
+    justify-content:left;
+    padding:var(--spacing-card-md)
+}
+.all-versions .version-button .download-button[data-v-7217db6b] {
+    grid-area:download
+}
+.all-versions .version-button .version__title[data-v-7217db6b] {
+    font-weight:700;
+    grid-area:title
+}
+.all-versions .version-button .version__title svg[data-v-7217db6b] {
+    vertical-align:top
+}
+.all-versions .version-button .version__metadata[data-v-7217db6b] {
+    display:flex;
+    flex-direction:row;
+    flex-wrap:wrap;
+    gap:var(--spacing-card-xs);
+    grid-area:metadata;
+    margin-top:var(--spacing-card-xs)
+}
+.all-versions .version-button .version__supports[data-v-7217db6b] {
+    display:flex;
+    flex-direction:column;
+    gap:var(--spacing-card-xs);
+    grid-area:supports
+}
+.all-versions .version-button .version__stats[data-v-7217db6b] {
+    display:flex;
+    flex-direction:column;
+    gap:var(--spacing-card-xs);
+    grid-area:stats
+}
+.search-controls[data-v-7217db6b] {
+    align-items:center;
+    display:flex;
+    flex-direction:row;
+    flex-wrap:wrap;
+    gap:var(--spacing-card-md)
+}
+.search-controls .multiselect[data-v-7217db6b] {
+    flex:1
+}
+.search-controls .checkbox-outer[data-v-7217db6b] {
+    min-width:-moz-fit-content;
+    min-width:fit-content
+}

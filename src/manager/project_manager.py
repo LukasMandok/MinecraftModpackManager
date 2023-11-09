@@ -1,18 +1,29 @@
 import json
 
+from ..models.mod_info import SourceProjectInfo
 from ..models.mod import Project, Mod
+from ..models.mod_storage import ModList
 
 
 class ProjectManager:
     def __init__(self):
-        pass
+        self.modList = ModList()
 
-    def create_project(info):
-        type = info["type"]
+    def create_project(mod_info : SourceProjectInfo, categories : list[str] = None):
+        type = mod_info.type
         if type == "mod":
-            return Mod(info["name"], info["type"], info["category"], info["subcategories"], info["description"], info["authors"])
+            if categories:
+                category = categories[0]
+                subcategories = categories[1:] if len(categories) > 1 else None
+            else: 
+                pass
+                # TODO: extract categories from mod_info
+                
+            return Mod(mod_info.name, mod_info.type, category, subcategories, mod_info.description, mod_info.authors)
 
-
+    def init_mod_list_from_download_list(self, data):
+        pass
+        
 ### Example self.versions:
 
 # {

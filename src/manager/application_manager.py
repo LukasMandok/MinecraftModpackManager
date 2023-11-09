@@ -1,16 +1,19 @@
-from . import api_manager, data_manager, download_manager, project_manager, file_manager
+from . import api_manager, data_manager, project_manager
 
 from ..models.constants import Sources
 
 import json
+from pprint import pprint
+import asyncio
 
 class ApplicationManager:
-    def __init__(self):
+    def __init__(self, app):
+        self.app = app
         self.projectManager = project_manager.ProjectManager()
         self.apiManager = api_manager.ApiManager()
-        self.fileManager = file_manager.FileManager()
-        self.downloadManager = download_manager.DownloadManager(self.apiManager)
-        self.dataManager = data_manager.DataManager(self.fileManager, self.downloadManager)
+        # self.fileManager = await file_manager.FileManager()
+        # self.downloadManager = await download_manager.DownloadManager(self.apiManager)
+        self.dataManager = data_manager.DataManager(self.apiManager)   #self.fileManager, self.downloadManager
 
     def get_mod_search_results(self, name, source = Sources.UNKNOWN):
         # first look in the local data
@@ -27,3 +30,13 @@ class ApplicationManager:
         
         # return result into json
         return json.dumps(mods_dict, default=str)
+    
+    
+    def create_download_list(self):
+        download_list = self.dataManager.get_download_list()
+        print("Downlaod List - List:")
+        pprint(download_list.list)
+        print("Downlaod List - Dict:")
+        pprint(download_list.dict)
+        
+        self.app.send_download_list(download_list.dict)

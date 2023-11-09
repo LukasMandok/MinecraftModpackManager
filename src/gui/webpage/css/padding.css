@@ -1,0 +1,52 @@
+@import url('variables.css');
+
+.base-card,
+.navigation-card,
+.padding-lg,
+.universal-card {
+    padding:var(--spacing-card-lg)
+}
+.padding-bg {
+    padding:var(--spacing-card-bg)
+}
+.padding-md {
+    padding:var(--spacing-card-md)
+}
+.padding-sm {
+    padding:var(--spacing-card-sm)
+}
+.padding-0 {
+    padding:0
+}
+.padding-block-lg {
+    padding-block:var(--spacing-card-lg)
+}
+.padding-block-bg {
+    padding-block:var(--spacing-card-bg)
+}
+.navigation-card,
+.padding-block-md {
+    padding-block:var(--spacing-card-md)
+}
+.padding-block-sm {
+    padding-block:var(--spacing-card-sm)
+}
+.padding-block-0 {
+    padding-block:0
+}
+.navigation-card,
+.padding-inline-lg {
+    padding-inline:var(--spacing-card-lg)
+}
+.padding-inline-bg {
+    padding-inline:var(--spacing-card-bg)
+}
+.padding-inline-md {
+    padding-inline:var(--spacing-card-md)
+}
+.padding-inline-sm {
+    padding-inline:var(--spacing-card-sm)
+}
+.padding-inline-0 {
+    padding-inline:0
+}
