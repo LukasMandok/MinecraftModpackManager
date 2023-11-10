@@ -3,16 +3,16 @@ import os
 
 from ..config import config
 
-from . import file_manager, download_manager
+from . import database_manager, download_manager
 from ..models.mod_storage import DownloadList
 
 # Create a Class for the DataManager that contains the functinos above:
 class DataManager:
-    def __init__(self, apiManager):   #fileManager, downloadManager
-        self.fileManager = file_manager.FileManager()
+    def __init__(self, apiManager):   #DatabaseManager, downloadManager
+        self.DatabaseManager = database_manager.DatabaseManager()
         self.downloadManager = download_manager.DownloadManager(apiManager)
         
-        self.data = self.fileManager.load_mod_list()
+        self.data = self.DatabaseManager() #.load_mod_list()
         
         self.downloadList_file   = DownloadList()
         self.downloadList_folder = DownloadList()
@@ -24,7 +24,7 @@ class DataManager:
     ## load download data
 
     def _load_download_list_from_file(self):
-        for mod_info in self.fileManager.load_download_list():
+        for mod_info in self.DatabaseManager.load_download_list():
             self.downloadList_file.add_mod(*mod_info)
             
         

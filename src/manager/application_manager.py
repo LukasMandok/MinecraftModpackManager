@@ -11,9 +11,9 @@ class ApplicationManager:
         self.app = app
         self.projectManager = project_manager.ProjectManager()
         self.apiManager = api_manager.ApiManager()
-        # self.fileManager = await file_manager.FileManager()
+        # self.DatabaseManager = await database_manager.DatabaseManager()
         # self.downloadManager = await download_manager.DownloadManager(self.apiManager)
-        self.dataManager = data_manager.DataManager(self.apiManager)   #self.fileManager, self.downloadManager
+        self.dataManager = data_manager.DataManager(self.apiManager)   #self.DatabaseManager, self.downloadManager
 
     def get_mod_search_results(self, name, source = Sources.UNKNOWN):
         # first look in the local data

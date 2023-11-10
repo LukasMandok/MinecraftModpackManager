@@ -1,38 +1,57 @@
 import json
 import os
 
+from tinydb import TinyDB, Table, QUery
+from aiotinydb import AIOTinyDB, AIOTable, AIOQuery
+
+from tinydb.storages import JSONStorage, MemoryStorage
+from tinydb.middlewares import CachingMiddleware as VanillaCachingMiddleware
+from aiotinydb.middleware import AIOMiddlewareMixin
+
 from ..config import config 
 
 
-class FileManager:
+class CachingMiddleware(VanillaCachingMiddleware, AIOMiddlewareMixin):
+    pass
+
+class DatabaseManager:
     def __init__(self):
-        self.mod_list_file = config.mod_list_file
+        self.database_file = config.database_file
         self.download_list_file = config.download_list_file
 
+        # create async aware database with caching functionality 
+        self.db   = AIOTinyDB(self.database_file, storage=CachingMiddleware(JSONStorage))
+        self.mods = self.db.table('mods')
+        
+        # self.download_db = TinyDB(storage=MemoryStorage)
+        # self.downloaded     = self.db.table('downloaded')
+        # self.download_list  = self.db.table('download_list')    
+        
+    
     ### public methods
         
     # Json Mod List
-    def load_mod_list(self):
-        # create the file if it doesn't exist
-        if not os.path.exists(self.mod_list_file):
-            with open(self.mod_list_file, 'w') as f:
-                json.dump({"mods": {}}, f)
+    # def load_mod_list(self):
+    #     # create the database if it doesn't exist
+    #     if not os.path.exists(self.mod_list_file):
+    #         with open(self.mod_list_file, 'w') as f:
+    #             json.dump({"mods": {}}, f)
 
-        try:
-            with open(self.mod_list_file, 'r') as f:
-                data = json.load(f)
-        except json.JSONDecodeError:
-            # the file is corrupt, so we'll just start fresh
-            data = {"mods": {}}
+    #     try:
+    #         with open(self.mod_list_file, 'r') as f:
+    #             data = json.load(f)
+    #     except json.JSONDecodeError:
+    #         # the file is corrupt, so we'll just start fresh
+    #         data = {"mods": {}}
         
-        return data
+    #     return data
 
 
-    def save_mod_list(self, data):
-        with open(self.mod_list_file, 'w') as f:
-            json.dump(data, f)
-            f.flush()
-            os.fsync(f.fileno())
+    # def save_mod_list(self, data):
+    #     with open(self.mod_list_file, 'w') as f:
+    #         json.dump(data, f)
+    #         f.flush()
+    #         os.fsync(f.fileno())
             
             
 
@@ -47,6 +66,7 @@ class FileManager:
         
             
     def load_download_list(self):
+        self.download_list.truncate()
         try:
             with open(self.download_list_file, 'r') as file:
                 yield from self._parse_download_file(file)
