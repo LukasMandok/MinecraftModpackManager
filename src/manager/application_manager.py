@@ -17,7 +17,8 @@ class ApplicationManager:
 
     def get_mod_search_results(self, name, source = Sources.UNKNOWN):
         # first look in the local data
-        mods = self.dataManager.find_mod(name)
+        #mods = self.dataManager.find_mod(name)
+        mods = None
 
         # if not found, search the api
         if mods is None:

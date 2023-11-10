@@ -1,5 +1,6 @@
 import json
 import os
+import asyncio
 
 from ..config import config
 
@@ -9,26 +10,31 @@ from ..models.mod_storage import DownloadList
 # Create a Class for the DataManager that contains the functinos above:
 class DataManager:
     def __init__(self, apiManager):   #DatabaseManager, downloadManager
-        self.DatabaseManager = database_manager.DatabaseManager()
         self.downloadManager = download_manager.DownloadManager(apiManager)
         
-        self.data = self.DatabaseManager() #.load_mod_list()
-        
+        # TODO: Maybe port this to MemoryStorage TinyDB (does not support nested dicts)
         self.downloadList_file   = DownloadList()
         self.downloadList_folder = DownloadList()
         
-        self._load_download_list_from_file()
-        self._load_download_list_from_folder()
+        # create database manager asynccronously
+        asyncio.run(self._create_database_manager())
+        
 
+    async def _create_database_manager(self):
+        self.databaseManager = await database_manager.DatabaseManager.create()
+        self.data = self.databaseManager.database
+        
+        await self._load_download_list_from_file()
+        await self._load_download_list_from_folder()
 
     ## load download data
 
-    def _load_download_list_from_file(self):
-        for mod_info in self.DatabaseManager.load_download_list():
+    async def _load_download_list_from_file(self):
+        for mod_info in self.databaseManager.load_download_list():
             self.downloadList_file.add_mod(*mod_info)
             
         
-    def _load_download_list_from_folder(self):
+    async def _load_download_list_from_folder(self):
         for mod_info in self.downloadManager.load_download_list():
             self.downloadList_folder.add_mod(*mod_info)
 

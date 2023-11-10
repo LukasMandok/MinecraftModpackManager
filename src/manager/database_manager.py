@@ -1,32 +1,38 @@
 import json
 import os
+import asyncio
 
-from tinydb import TinyDB, Table, QUery
-from aiotinydb import AIOTinyDB, AIOTable, AIOQuery
+from aiotinydb import AIOTinyDB
+from aiotinydb.storage import AIOJSONStorage
 
-from tinydb.storages import JSONStorage, MemoryStorage
-from tinydb.middlewares import CachingMiddleware as VanillaCachingMiddleware
-from aiotinydb.middleware import AIOMiddlewareMixin
+from aiotinydb.middleware import CachingMiddleware
 
 from ..config import config 
 
-
-class CachingMiddleware(VanillaCachingMiddleware, AIOMiddlewareMixin):
-    pass
-
 class DatabaseManager:
-    def __init__(self):
-        self.database_file = config.database_file
-        self.download_list_file = config.download_list_file
+    database_file = config.database_file
+    download_list_file = config.download_list_file
 
-        # create async aware database with caching functionality 
-        self.db   = AIOTinyDB(self.database_file, storage=CachingMiddleware(JSONStorage))
-        self.mods = self.db.table('mods')
+    def __init__(self, db, mods):
+
+        self.db = db
+        self.mods = mods
         
         # self.download_db = TinyDB(storage=MemoryStorage)
         # self.downloaded     = self.db.table('downloaded')
         # self.download_list  = self.db.table('download_list')    
-        
+    
+    # asynchronously factory method
+    @classmethod
+    async def create(cls):
+        db, mods = await cls._create_database()
+        return cls(db, mods)
+    
+    @classmethod
+    async def _create_database(cls):
+        async with AIOTinyDB(cls.database_file, storage=CachingMiddleware(AIOJSONStorage)) as db:
+            mods = db.table('mods')
+            return db, mods
     
     ### public methods
         
@@ -53,7 +59,9 @@ class DatabaseManager:
     #         f.flush()
     #         os.fsync(f.fileno())
             
-            
+    @property
+    def database(self):
+        return self.db
 
     # Txt download List
     def save_download_list(self, mod_list):
@@ -66,7 +74,6 @@ class DatabaseManager:
         
             
     def load_download_list(self):
-        self.download_list.truncate()
         try:
             with open(self.download_list_file, 'r') as file:
                 yield from self._parse_download_file(file)
