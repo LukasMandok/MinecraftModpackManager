@@ -23,7 +23,7 @@ class Config:
         if config.get("use_relative_paths", True):
             # Get absolute path to the script directory
             config['download_dir'] = os.path.join(project_dir, config['download_dir'])
-            config['mod_list_file'] = os.path.join(project_dir, config['mod_list_file'])
+            config['database_file'] = os.path.join(project_dir, config['database_file'])
             config['download_list_file'] = os.path.join(project_dir, config['download_list_file'])
             
         return config
@@ -33,8 +33,8 @@ class Config:
         return self.config['download_dir']
 
     @property
-    def mod_list_file(self):
-        return self.config['mod_list_file']
+    def database_file(self):
+        return self.config['database_file']
     
     @property
     def download_list_file(self):
