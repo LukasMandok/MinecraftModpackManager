@@ -18,6 +18,7 @@ function openTab(event, tab_name) {
     event.currentTarget.className += " active";
 }
 
+
 // Mod Item
 function createProjectCard(item) {
     const projectCard = document.createElement('article');
@@ -88,7 +89,7 @@ function createProjectCard(item) {
     modDownloadsNumber.innerText = item.downloads;
     modDownloadsLabel = document.createElement('span');
     modDownloadsLabel.innerText = ' downloads';
-    modDownloadsP.append(modDownloadsNumber, modDownloadsLabel);
+    modDownloadsP.apptmlend(modDownloadsNumber, modDownloadsLabel);
     modDownloads.append(modDownloadsP);
 
     const modUpdated = document.createElement('div');

@@ -4,7 +4,7 @@
 
 } */
 
-.category-container {
+.category-subcontainer, .category-container {
     float: left;
     position:relative;
     display: flex;
@@ -13,14 +13,19 @@
     row-gap: var(--spacing-card-sm);
 }
 
-.category-container:not(.level-0) {
+.category-container + .category-container {
+    margin-top: var(--spacing-card-lg);
+}
+
+.category-subcontainer[class*="level-"]:not(.level-0) {
     box-sizing:border-box;
     border-left: 2px solid var(--color-table-border);
     border-radius: 0 0 0 var(--radius-lg);
 }
 
-.category-container + .category, .project + .category {
-    margin-top: var(--gap-lg);
+
+.category-subcontainer + .category, .project + .category  {
+    margin-top: var(--spacing-card-xxl);
 }
 
 .category-label {
@@ -35,7 +40,7 @@
 /* NOTE: Maybe transfer this too base-card */
 
 
-.project.selected {
+.project.selected, .category.selected {
     /* border-bottom: 2px solid var(--color-brand-shadow); */
     border-right: 3px solid var(--color-brand-shadow);
     border-left: 3px solid var(--color-brand-shadow);

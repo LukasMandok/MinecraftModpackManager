@@ -25,3 +25,4 @@ class DownloadManager:
                 name = name.split("-", 1)[0]
                 
                 yield name, categories, scope, None
+                

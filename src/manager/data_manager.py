@@ -38,6 +38,10 @@ class DataManager:
         for mod_info in self.downloadManager.load_download_list():
             self.downloadList_folder.add_mod(*mod_info)
 
+
+    def save_download_list_to_file(self):
+        self.databaseManager.save_download_list(self.downloadList_file.iterate_dict())
+
     ### public functions
     
     def get_download_list(self):

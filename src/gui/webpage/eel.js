@@ -42,6 +42,7 @@ function prompt_alerts(description) {
 }
 
 function receive_download_list(download_list){
-    // TODO: implement 
-    console.log(download_list);
+    console.log("javascript eel - receive download list:", download_list);
+    create_download_list(download_list);
+    return true;
 }

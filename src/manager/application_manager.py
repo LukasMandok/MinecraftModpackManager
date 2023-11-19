@@ -40,4 +40,4 @@ class ApplicationManager:
         print("Downlaod List - Dict:")
         pprint(download_list.dict)
         
-        self.app.send_download_list(download_list.dict)
+        self.app.send_download_list(download_list.getList())

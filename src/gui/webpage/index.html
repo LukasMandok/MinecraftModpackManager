@@ -229,66 +229,71 @@
                 <button onclick="request_download_list()">Show Download File</button>
                 <button onclick="request_downloaded_list()">Show Downloaded Content</button>
                 <div class="search-results-container">
-                    <div class="project-list"> <!-- display-mode--grid  -> leads to  -->
-                        <div class="project-card base-card category level-0 padding-sm" id="scope1">
+                    <div class="project-list" id="download-list-container"> <!-- display-mode--grid  -> leads to  -->
+                        <!-- <div class="project-card base-card category padding-sm" id="scope1">
                             <span class="category-label">serverside</span>
+                            <div class="multiselect__select"></div>
                         </div>
                         <div class="category-container level-0" parent="scope1">
-                            <div class="project-card base-card category padding-sm" id="category1">
-                                <span class="category-label">category 1</span>
-                                <div class="multiselect__select"></div>
-                            </div>
-                            <div class="category-container level-1" parent="category1">
-                                <div class="project-card base-card category padding-sm" id="subcategory1">
-                                    <span class="category-label">subcategory 1.11</span>
+                            <div class="category">
+                                <div class="project-card base-card category padding-sm" id="category1">
+                                    <span class="category-label">category 1</span>
                                     <div class="multiselect__select"></div>
                                 </div>
-                                <div class="category-container level-1" parent="subcategory1">
-                                    <div class="project-card base-card project padding-sm">
-                                        <span class="project-label">project name 1.1.1</span>
-                                    </div>  
-                                    <div class="project-card base-card project padding-sm">
-                                        <span class="project-label">project name 1.1.2</span>
-                                    </div>  
-
-                                    <div class="project-card base-card category padding-sm" id="subsubcategory1">
-                                        <span class="category-label">subsubcategory 1.1.1</span>
+                                <div class="category-container level-1" parent="category1">
+                                    <div class="project-card base-card category padding-sm" id="subcategory1">
+                                        <span class="category-label">subcategory 1.11</span>
+                                        <div class="multiselect__select"></div>
                                     </div>
-                                    <div class="category-container level-1" parent="subsubcategory1">
+                                    <div class="category-container level-1" parent="subcategory1">
                                         <div class="project-card base-card project padding-sm">
-                                            <span class="project-label">project name 1.1.1.1</span>
+                                            <span class="project-label">project name 1.1.1</span>
+                                        </div>  
+                                        <div class="project-card base-card project padding-sm">
+                                            <span class="project-label">project name 1.1.2</span>
+                                        </div>  
+    
+                                        <div class="project-card base-card category padding-sm" id="subsubcategory1">
+                                            <span class="category-label">subsubcategory 1.1.1</span>
+                                        </div>
+                                        <div class="category-container level-1" parent="subsubcategory1">
+                                            <div class="project-card base-card project padding-sm">
+                                                <span class="project-label">project name 1.1.1.1</span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="project-card base-card category padding-sm" id="subcategory1">
-                                    <span class="category-label">subcategory 1.11</span>
-                                </div>
-                                <div class="category-container level-1" parent="subcategory1">
-                                    <div class="project-card base-card project padding-sm selected">
-                                        <span class="project-label">project name 1.1.1</span>
-                                    </div>  
-                                    <div class="project-card base-card project padding-sm selected">
-                                        <span class="project-label">project name 1.1.2</span>
-                                    </div>  
-                                </div>
-                            </div>  
-                            <div class="project-card base-card category padding-sm" id="category3">
-                                <span class="category-label">category 2</span>
+                                    <div class="project-card base-card category padding-sm" id="subcategory1">
+                                        <span class="category-label">subcategory 1.11</span>
+                                    </div>
+                                    <div class="category-container level-1" parent="subcategory1">
+                                        <div class="project-card base-card project padding-sm selected">
+                                            <span class="project-label">project name 1.1.1</span>
+                                        </div>  
+                                        <div class="project-card base-card project padding-sm selected">
+                                            <span class="project-label">project name 1.1.2</span>
+                                        </div>  
+                                    </div>
+                                </div>  
                             </div>
-                            <div class="category-container level-1" parent="category3">
-                                <div class="project-card base-card category padding-sm" id="subcategory2">
-                                    <span class="category-label">subcategory 2.1</span>
+                            <div class="category-container"></div>
+                                <div class="project-card base-card category padding-sm" id="category3">
+                                    <span class="category-label">category 2</span>
                                 </div>
-                                <div class="category-container level-1" parent="subcategory2">
-                                    <div class="project-card base-card project padding-sm deactivated">
-                                        <span class="project-label">project name 2.1.1</span>
-                                    </div>  
-                                    <div class="project-card base-card project padding-sm">
-                                        <span class="project-label">project name 2.1.2</span>
-                                    </div>  
+                                <div class="category-container level-1" parent="category3">
+                                    <div class="project-card base-card category padding-sm" id="subcategory2">
+                                        <span class="category-label">subcategory 2.1</span>
+                                    </div>
+                                    <div class="category-container level-1" parent="subcategory2">
+                                        <div class="project-card base-card project padding-sm deactivated">
+                                            <span class="project-label">project name 2.1.1</span>
+                                        </div>  
+                                        <div class="project-card base-card project padding-sm">
+                                            <span class="project-label">project name 2.1.2</span>
+                                        </div>  
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -298,5 +303,6 @@
     <script src="js/main.js"></script>
     <script src="js/list.js"></script>
     <script src="js/search.js"></script>
+    <script src="js/download.js"></script>
     <script src="eel.js"></script>
 </html>

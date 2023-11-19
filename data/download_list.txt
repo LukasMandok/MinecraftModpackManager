@@ -1,9 +1,8 @@
-ServerSync
-
-# Larger Content Packs
+#ServerSync
 
 [Both]
 Content
+    # Larger Content Packs
     Pack
         # The Ather Mod
         The Aether

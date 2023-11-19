@@ -61,7 +61,9 @@ class Application:
         
     ### calling functions exposed in javascript
     def send_download_list(self, download_list):
+        print("converting download list to json", download_list)
         json_dict = json.dumps(download_list, default=str)
+        print("sending converted download list:", json_dict)
         self.eel.receive_download_list(json_dict)
         
     def update_download_list(self, update):

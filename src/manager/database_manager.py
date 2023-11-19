@@ -64,8 +64,9 @@ class DatabaseManager:
         return self.db
 
     # Txt download List
-    def save_download_list(self, mod_list):
-        lines = self._generate_download_file(mod_list)
+    def save_download_list(self, iterator):
+        # define generator to create lines from iterator:
+        lines = (self._generate_download_file_line(level, name, comment) for level, name, comment in iterator)
         try:
             with open(self.download_list_file, 'w') as file:
                 file.writelines(lines)
@@ -155,37 +156,15 @@ class DatabaseManager:
             
     
     
-    # parse 
-    def _generate_download_file(mods):        
+    @staticmethod
+    def _generate_download_file_line(level, name, comment):        
         def get_spaces(intendation):
             return " " * intendation * 4
-    
-        # iterator over the mod_dict
-        def iterate_dict(current_dict, level = 0, next = None):
-            for key, value in current_dict.items():     
-                if next == "category":
-                    yield level, key, None
-                    yield from iterate_dict(value, level + 1)
-                elif next == "scope":
-                    yield level, "[" + key + "]", None
-                    yield from iterate_dict(value, level)
-                    
-                if key == "mods":
-                    for mod in value:
-                        yield level, mod["name"], mod["comment"]
-                elif key == "category":
-                    yield from iterate_dict(value, level, next = "category")
-                elif key == "scope":
-                    yield from iterate_dict(value, level, next = "scope")
-                else:
-                    raise ValueError(f"Unknown key: {key}")
         
-        lines = []
-        for level, name, comment in iterate_dict(mods):
-            line = get_spaces(level) + name
-            if comment:
-                line += " # " + comment
-            lines.append(line)
+        line = get_spaces(level) + name
+        if comment:
+            line += " # " + comment
+            
+        line += "\n"
 
-        
-        return lines
+        return line
