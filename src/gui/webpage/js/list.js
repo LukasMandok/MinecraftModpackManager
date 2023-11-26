@@ -9,50 +9,88 @@ class Mod {
         this.loader = [];
 
         this._createHTML();
+        this._createEventListener();
+
+        this.onSelectionChange = () => {};
+        this.onSelectionChangeList = () => {};
     }
 
     _createHTML() {
-        this.container = document.createElement('div');
-        this.container.className = 'project-card base-card project padding-sm';
-        this.container.id = "mod-" + CategoryList.name_to_id(this.name);
+        this.title = document.createElement('div');
+        this.title.className = 'project-card base-card project padding-sm';
+        this.title.id = "mod-" + CategoryList.name_to_id(this.name);
 
         this.label = document.createElement('span');
         this.label.className = 'project-label';
         this.label.innerText = this.name;
 
-        this.container.append(this.label);
+        this.title.append(this.label);
+    }
+
+    _createEventListener() {
+        this.title.addEventListener('click', (event) => {
+            this.select();
+            event.stopPropagation();
+        });
     }
 
     getHTML() {
-        return this.container;
+        return this.title;
     }
 
+    // Getter and Setter
+
+    setCategories(categories) {
+        this.categories = categories;
+    }
+
+    getCategory() {
+        return this.categories;
+    }
 
     getName() {
         return this.name;
     }
 
+    // Selection
 
+    // allows for back propagation of selection status to parent category
+    setOnSelectionCallback(callbackFunction) {
+        this.onSelectionChange = callbackFunction;
+    }
+
+
+    // toggle selection status or set it to flag if given
     select(flag = null){
         this.selected = flag !== null ? flag : !this.selected;
 
         // TODO: apply selection to html
         if (this.selected) {
-            this.container.classList.add("selected");
+            this.title.classList.add("selected");
         }
         else {
-            this.container.classList.remove("selected");
+            this.title.classList.remove("selected");
         }
+
+        // if flag != null, selection was made by forward propagation, so there is no need to propagate back
+        if (flag == null) {
+            this.onSelectionChange(this.selected);
+        }
+    }
+
+    isSelected() {
+        return this.selected;
     }
 }
 
-class Category {
+class Category { 
     constructor(name, id = null, level = 1) {
         this.name = name;
         this.id = id || "category-" + CategoryList.name_to_id(name);
         this.level = level;
 
         this.selected = false;
+        this.partlySelected = false;
         this.visible = true;
 
         this.categories = {};
@@ -62,7 +100,11 @@ class Category {
 
         this._createHTML();
         this._createEventListener();
+
+        this.onSelectionChange = () => {};
     }
+
+    // HTML Content
 
     _createHTML() {
         this.container = document.createElement('div');
@@ -106,7 +148,7 @@ class Category {
         return this.container;
     }
 
-
+    // Getters
 
     getName() {
         return this.name;
@@ -117,9 +159,17 @@ class Category {
         return this.categories[name];
     }
 
+    // Add Items to list
+
     addCategory(name) {
         let id = this.id + "-" + CategoryList.name_to_id(name);
         let category = new Category(name, id);
+
+        console.log("added new Category: ", name)
+
+        category.setOnSelectionCallback(this.handleChildSelectionChange.bind(this));
+
+        console.log("added callback function to Category: ", name, ":", category.onSelectionChange, "to:", this.handleChildSelectionChange.bind(this))
 
         this.categories[name] = category;
         this._appendHTML(category.getHTML());
@@ -128,28 +178,69 @@ class Category {
     }
     
     addMod(mod) {
+        mod.setOnSelectionCallback(this.handleChildSelectionChange.bind(this));
+
         console.log("Category - addMdod: ", mod)
         this.mods[mod.getName()] = mod;
         console.log("append html to Category:", mod.getHTML())
         this._appendHTML(mod.getHTML());
     }
 
-    select(flag = null) {
-        // FIXME: maybe this instead: this.selected = flag !== null ? flag : !this.selected
+    // Selection
+
+    setOnSelectionCallback(callbackFunction) {
+        this.onSelectionChange = callbackFunction;
+    }
+
+    isSelected() {
+        return this.selected;
+    }
+
+    isPartlySelected() {
+        return this.partlySelected;
+    }
+
+    partlySelect(flag = true) {
+        this.partlySelected = flag;
+
+        this.updateSelection();
+    }
+
+    select(flag = null, propagate = true) {
+        // toggle selected status or set it to flag if given
         this.selected = flag !== null ? flag : !this.selected;
 
-        console.log("toggle selected of Category:", this.name, "to:", this.selected)
+        console.log("!!! select Category:", this.name, "to:", this.selected, "flag:", flag)
 
-        for (let name in this.categories) {
-            let category = this.categories[name];
-            category.select(this.selected);
+        if (propagate) {
+            for (let name in this.categories) {
+                let category = this.categories[name];
+                category.select(this.selected, true);
+            }
+            for (let name in this.mods) {
+                let mod = this.mods[name];
+                mod.select(this.selected, true);
+            }
+        } 
+
+        // remove partly-selection if state was not toggled -> initiate back propagation if currently not forward propagating
+        if (flag != null) {
+            this.partlySelected = false;
+            // if selection was set by back propagation
+            if (propagate == false) {
+                this.onSelectionChange(this.selected);
+            }
         }
-        for (let name in this.mods) {
-            let mod = this.mods[name];
-            mod.select(this.selected);
+        // start back propagation though categories if selection was toggled, otherwise we are in forward propagation
+        else {
+            this.onSelectionChange(this.selected);
         }
-        
-        // add class Name selected to html
+
+        // Update selection html
+        this.updateSelection();
+    }
+
+    updateSelection() {
         if (this.selected) {
             this.title.classList.add("selected");
         }
@@ -157,6 +248,113 @@ class Category {
             this.title.classList.remove("selected");
         }
 
+        if (this.partlySelected) {
+            this.title.classList.add("partly-selected");
+        }
+        else {
+            this.title.classList.remove("partly-selected");
+        }
+    }
+
+    handleChildSelectionChange(newState, partly = null) {
+        // console.log("!!! callback Category: ", this.name, "  - new State: ", newState, "  current state: ", this.selected, "  partly: ", partly)
+        
+        // if not a partly selection back propagation (backpropagation started or changed selection on parent category)
+        if (partly == null) {
+            // console.log("partly == null")
+            
+            // check if all children have the same new states
+            let identical = this.isChildSelectionIdentical(newState);
+            if (identical == true) {
+                // if new selection state is different from current state
+                // console.log("all children are selected:", newState, " -> apply this selection to: ", this.name)
+                
+                if (newState != this.selected) {
+                    // console.log("newState != this.selected")
+                    
+                    // change to new state of parent as well -> also removes partly selection and continues back propagation
+                    this.select(newState, false);
+                    return;
+                }
+            }
+
+            // if no selection is necessary:
+            // check if any child is already partly selected -> parent is also partly
+            partly = this.areChildrenPartlySelected();
+
+            // otherwise if some children but not all are selected -> parent is partly
+            partly ||= this.areChildrenSelected() && !identical;
+
+            // console.log("change partly selectino to:", partly)
+
+            this.partlySelect(partly);
+            this.onSelectionChange(newState, partly);
+        }
+        // propagate partly selection of children
+        else {
+            // stop propagation, if parent already has the correct partly selection
+            if (this.isPartlySelected() == partly) {
+                // console.log("0. stop propagation, if parent already has the correct partly selection ---- STOP!!!")
+                return;
+            }
+            // if any child is partly selected, parent will also be partly selected, even if the 
+            if (partly == false) {
+                // console.log("1. propagation children is not partly selected -> check if any other children is partly selected")
+                partly = this.areChildrenPartlySelected();
+                if (partly == true) {
+                    // console.log("2. one children is still partly selected -> partly select parent")
+                    if (this.isPartlySelected() == partly) {
+                        // console.log("3. stop propagation, if parent already has the correct partly selection ---- STOP!!!")
+                        return;
+                    }
+                }
+            }
+            this.partlySelect(partly);
+            this.onSelectionChange(newState, partly);
+        }
+    }
+
+    isChildSelectionIdentical(newState) {
+        for (let c in this.categories) {
+            let category = this.categories[c];
+            if (category.isSelected() != newState) {
+                return false;
+            }
+        }
+
+        for (let m in this.mods) {
+            let mod = this.mods[m];
+            if (mod.isSelected() != newState) {
+                return false;
+            }
+        }
+        return true
+    }
+
+    areChildrenSelected() {
+        for (let c in this.categories) {
+            let category = this.categories[c];
+            if (category.isSelected()) {
+                return true;
+            }
+        }
+        for (let m in this.mods) {
+            let mod = this.mods[m];
+            if (mod.isSelected()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    areChildrenPartlySelected() {
+        for (let c in this.categories) {
+            let category = this.categories[c];
+            if (category.isPartlySelected()) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 
@@ -204,7 +402,7 @@ class CategoryList {
 
     addCategory(name) {
         console.log("CategoryList - addCategory: ", name)
-        let cat = new Category(name, null, 0);
+        let cat = new Category(name, null, 0); // TODO: replace null by actual 0 for level-0 (this should lead to the same result)
         this.categories[name] = cat;
         console.log("append html to CategoryList:", cat.getHTML())
         this._appendHTML(cat.getHTML());
@@ -232,8 +430,9 @@ class CategoryList {
         
         // add rest of categories from the list
         console.log("adding rest of categories", categories)
-        let next_cat = null;
         for (let category of categories) {
+            let next_cat = null;
+            console.log("!!! current category:", category, "exists:", exists)
             if (exists) {
                 console.log("previous category exists, getting next category:", category)
                 next_cat = cat.getCategory(category)
@@ -244,9 +443,10 @@ class CategoryList {
             }
             console.log("next category exists:", next_cat)
             if (!(next_cat)) {
-                console.log("next   category does not exist yet", category)
+                console.log("next category does not exist yet", category)
                 next_cat = cat.addCategory(category);
             }
+            console.log("add category to list")
             category_list.push(next_cat)
             cat = next_cat
         }
@@ -258,24 +458,37 @@ class CategoryList {
 
     // TODO: implement rest
     addMod(name, ...category_names_arg) {
-        console.log("called add mod function: ", name, "to categories:", category_names_arg, "to CategoryList")
         let category_names = category_names_arg.flat();
-        console.log("adding new mod:", name, "to categories:", category_names, "to CategoryList")
-        
+
         let mod = new Mod(name);
-        console.log("created mod")
         let categories = this.addCategories(category_names);
-        console.log("added new categories")
+        mod.setCategories(categories);
 
-        this.mods[name] = {"mod": mod, "categories": categories};
+        this.mods[name] = mod;
 
-        console.log("add mod to Category:", categories[categories.length - 1])
+        // add callback function to update mod selection status in list
+        // HELP: the arrow function automatically binds the current value of name to the function
+        // FIXME: This does not work at the moment
+        // this.setOnSelectionModCallback(name, (newState) => {
+        //     this.mods[name]["mod"].selected = newState;
+        // });
+
+        console.log("add current mod to category:", categories[categories.length - 1].getName());
+
         // add the mod to the last category in the list
         categories[categories.length - 1].addMod(mod);
-        console.log("added mod to last category in list")
 
         // NOTE: append reference to object ??? 
     }
+
+
+    // Callback function to update the mods dict with current selection status
+    // setOnSelectionModCallback(modName, callbackFunction) {
+    //     if (this.mods[modName]) {
+    //         this.mods[modName]["mod"].setOnSelectionListCallback(callbackFunction);
+    //     }
+    // }
+
 
     // static functions
     static name_to_id(name) {

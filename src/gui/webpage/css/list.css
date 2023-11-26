@@ -40,12 +40,19 @@
 /* NOTE: Maybe transfer this too base-card */
 
 
-.project.selected, .category.selected {
+.project.selected, .category.selected:not(.partly-selected) {
     /* border-bottom: 2px solid var(--color-brand-shadow); */
     border-right: 3px solid var(--color-brand-shadow);
     border-left: 3px solid var(--color-brand-shadow);
     /* create an outline with 3px green and 10px transparent on the left and right side */
     filter: var(--active-filter);
+}
+
+.category.partly-selected {
+    border-right: 3px dashed var(--color-brand-shadow);
+    border-left: 3px dashed var(--color-brand-shadow);
+    /* create an outline with 3px green and 10px transparent on the left and right side */
+    filter: var(--hover-filter);
 }
 
 .project.deactivated {
