@@ -257,35 +257,25 @@ class Category {
     }
 
     handleChildSelectionChange(newState, partly = null) {
-        // console.log("!!! callback Category: ", this.name, "  - new State: ", newState, "  current state: ", this.selected, "  partly: ", partly)
-        
         // if not a partly selection back propagation (backpropagation started or changed selection on parent category)
         if (partly == null) {
-            // console.log("partly == null")
-            
             // check if all children have the same new states
             let identical = this.isChildSelectionIdentical(newState);
             if (identical == true) {
                 // if new selection state is different from current state
-                // console.log("all children are selected:", newState, " -> apply this selection to: ", this.name)
-                
                 if (newState != this.selected) {
-                    // console.log("newState != this.selected")
-                    
                     // change to new state of parent as well -> also removes partly selection and continues back propagation
                     this.select(newState, false);
                     return;
                 }
             }
-
-            // if no selection is necessary:
+            // Initiate back propagation:
+            // check partly selection conditions:
             // check if any child is already partly selected -> parent is also partly
             partly = this.areChildrenPartlySelected();
 
             // otherwise if some children but not all are selected -> parent is partly
             partly ||= this.areChildrenSelected() && !identical;
-
-            // console.log("change partly selectino to:", partly)
 
             this.partlySelect(partly);
             this.onSelectionChange(newState, partly);
@@ -294,17 +284,14 @@ class Category {
         else {
             // stop propagation, if parent already has the correct partly selection
             if (this.isPartlySelected() == partly) {
-                // console.log("0. stop propagation, if parent already has the correct partly selection ---- STOP!!!")
                 return;
             }
-            // if any child is partly selected, parent will also be partly selected, even if the 
+            // if any child is partly selected, parent will also be partly selected, even if the child with the back propgation is not partly selected anymore
             if (partly == false) {
-                // console.log("1. propagation children is not partly selected -> check if any other children is partly selected")
                 partly = this.areChildrenPartlySelected();
                 if (partly == true) {
-                    // console.log("2. one children is still partly selected -> partly select parent")
+                    // if partly parent is already partly selected, stop propagation
                     if (this.isPartlySelected() == partly) {
-                        // console.log("3. stop propagation, if parent already has the correct partly selection ---- STOP!!!")
                         return;
                     }
                 }
