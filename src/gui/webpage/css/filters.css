@@ -490,7 +490,7 @@
 }
 
 .multiselect--active .multiselect__select {
-    transform: rotate(180deg)
+    transform: rotate(90deg) /* transform: rotate(180deg) */
 }
 
 .multiselect--above.multiselect--active .multiselect__current,
@@ -634,15 +634,15 @@
 }
 
 .multiselect__select:before {
-    border-color: #999 transparent transparent;
+    border-color: transparent transparent transparent var(--color-icon); /* border-color: #999 transparent transparent;*/
     border-style: solid;
-    border-width: 5px 5px 0;
-    color: #999;
+    border-width: 5px 0 5px 5px; /*border-width: 5px 5px 0*/
+    color: var(--color-icon);
     content: "";
     margin-top: 4px;
     position: relative;
     right: 0;
-    top: 65%
+    top: 50%; /* top: 65% */
 }
 
 .multiselect__placeholder {

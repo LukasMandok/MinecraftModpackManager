@@ -4,12 +4,14 @@
 
 } */
 
-.category-subcontainer, .category-container {
+.category-subcontainer, .category-container, .mod-container { 
     float: left;
     position:relative;
     display: flex;
     flex-direction:column;
+}
 
+.category-subcontainer, .category-container {
     row-gap: var(--spacing-card-sm);
 }
 

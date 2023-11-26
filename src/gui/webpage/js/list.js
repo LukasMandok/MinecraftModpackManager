@@ -1,30 +1,18 @@
-class Mod {
+class Item {
     constructor(name) {
         this.name = name;
 
         this.selected = false;
         this.visible = true;
 
-        this.versions = [];
-        this.loader = [];
-
-        this._createHTML();
-        this._createEventListener();
+        this.title;
+        this.container;
 
         this.onSelectionChange = () => {};
-        this.onSelectionChangeList = () => {};
     }
 
     _createHTML() {
-        this.title = document.createElement('div');
-        this.title.className = 'project-card base-card project padding-sm';
-        this.title.id = "mod-" + CategoryList.name_to_id(this.name);
-
-        this.label = document.createElement('span');
-        this.label.className = 'project-label';
-        this.label.innerText = this.name;
-
-        this.title.append(this.label);
+        throw new Error("You have to implement the method _createHTML!");
     }
 
     _createEventListener() {
@@ -34,74 +22,131 @@ class Mod {
         });
     }
 
-    getHTML() {
-        return this.title;
-    }
-
-    // Getter and Setter
-
-    setCategories(categories) {
-        this.categories = categories;
-    }
-
-    getCategory() {
-        return this.categories;
-    }
-
     getName() {
         return this.name;
     }
 
+    getCategories() {
+        return this.categories;
+    }
+
+    getHTML() {
+        return this.container;
+    }
+
+
     // Selection
+
+    isSelected() {
+        return this.selected;
+    }
 
     // allows for back propagation of selection status to parent category
     setOnSelectionCallback(callbackFunction) {
         this.onSelectionChange = callbackFunction;
     }
 
+    select(flag = null) {
+        throw new Error("You have to implement the method select!");
+    }
 
-    // toggle selection status or set it to flag if given
-    select(flag = null){
-        this.selected = flag !== null ? flag : !this.selected;
-
-        // TODO: apply selection to html
+    updateSelection() {
         if (this.selected) {
             this.title.classList.add("selected");
         }
         else {
             this.title.classList.remove("selected");
         }
+    }
+
+    // Visibility
+
+    getVisibility() {
+        return this.visible;
+    }
+
+    setVisibility(flag) {
+        this.visible = flag;
+    }
+
+    updateVisibility() {
+        if (this.visible) {
+            this.container.classList.remove("invisible");
+        }
+        else {
+            this.container.classList.add("invisible");
+        }
+    }
+
+}
+
+class Mod extends Item {
+    constructor(name) {
+        super(name);
+
+        this.versions = [];
+        this.loader = [];
+
+        this._createHTML();
+        this._createEventListener();
+    }
+
+    _createHTML() {
+        this.container = document.createElement('div');
+        this.container.className = 'mod-container';
+
+        this.title = document.createElement('div');
+        this.title.className = 'project-card base-card project padding-sm';
+        this.title.id = "mod-" + CategoryList.name_to_id(this.name);
+
+        this.label = document.createElement('span');
+        this.label.className = 'project-label';
+        this.label.innerText = this.name;
+
+        this.title.append(this.label);
+        this.container.append(this.title);
+    }
+
+    // Getter and Setter
+
+    // getHTML() {
+    //     return this.title;
+    // }
+
+    setCategories(categories) {
+        this.categories = categories;
+    }
+
+    // Selection
+
+    // toggle selection status or set it to flag if given
+    select(flag = null){
+        this.selected = flag !== null ? flag : !this.selected;
+
+        this.updateSelection();
 
         // if flag != null, selection was made by forward propagation, so there is no need to propagate back
         if (flag == null) {
             this.onSelectionChange(this.selected);
         }
     }
-
-    isSelected() {
-        return this.selected;
-    }
 }
 
-class Category { 
+class Category extends Item{ 
     constructor(name, id = null, level = 1) {
-        this.name = name;
+        super(name);
+
         this.id = id || "category-" + CategoryList.name_to_id(name);
         this.level = level;
 
-        this.selected = false;
         this.partlySelected = false;
-        this.visible = true;
+        this.collapsed = false;
 
         this.categories = {};
         this.mods = {};
 
-        console.log("creating new html of Category", this.name)
-
         this._createHTML();
         this._createEventListener();
-
-        this.onSelectionChange = () => {};
     }
 
     // HTML Content
@@ -127,15 +172,16 @@ class Category {
         // Create Mod Container
         this.sub_container = document.createElement('div');
         this.sub_container.className = 'category-subcontainer' + ' level-' + this.level;
-
         
         this.container.append(this.title, this.sub_container);
     }
 
     _createEventListener() {
-        this.title.addEventListener('click', (event) => {
-            console.log("clicked category:", this.name);
-            this.select();
+        super._createEventListener();
+
+        this.arrow.addEventListener('click', (event) => {
+            console.log("clicked arrow of category:", this.name);
+            this.collapse();
             event.stopPropagation();
         });
     }
@@ -144,15 +190,7 @@ class Category {
         this.sub_container.append(item_html);
     }
 
-    getHTML() {
-        return this.container;
-    }
-
     // Getters
-
-    getName() {
-        return this.name;
-    }
 
     // TODO: do error handling -maybe?
     getCategory(name) {
@@ -188,13 +226,6 @@ class Category {
 
     // Selection
 
-    setOnSelectionCallback(callbackFunction) {
-        this.onSelectionChange = callbackFunction;
-    }
-
-    isSelected() {
-        return this.selected;
-    }
 
     isPartlySelected() {
         return this.partlySelected;
@@ -243,12 +274,7 @@ class Category {
     }
 
     updateSelection() {
-        if (this.selected) {
-            this.title.classList.add("selected");
-        }
-        else {
-            this.title.classList.remove("selected");
-        }
+        super.updateSelection();
 
         if (this.partlySelected) {
             this.title.classList.add("partly-selected");
@@ -343,6 +369,49 @@ class Category {
         }
         return false;
     }
+
+    // visibility
+
+    getVisibility() {
+        return this.visible;
+    }
+
+    setVisibility(flag, propagate = false) {
+        this.visible = flag;
+        if (propagate == true) {
+            this.propagateVisibility(flag);
+        }
+    }
+
+    propagateVisibility(flag) {
+        for (let name in this.categories) {
+            let category = this.categories[name];
+            category.setVisibility(flag, true);
+        }
+        for (let name in this.mods) {
+            let mod = this.mods[name];
+            mod.setVisibility(flag, true);
+        }
+    }
+
+    collapse(flag = null) {
+        this.collapsed = flag !== null ? flag : !this.collapsed;
+
+        this.propagateVisibility(flag);
+        this.updateVisibility();
+    }
+
+    updateVisibility() {
+        super.updateVisibility();
+
+        if (this.collapsed) {
+            this.arrow.classList.remove("multiselect--active");
+        }
+        else {
+            this.arrow.classList.add("multiselect--active");
+        }
+    }
+
 }
 
 class CategoryList {
@@ -389,7 +458,7 @@ class CategoryList {
 
     addCategory(name) {
         console.log("CategoryList - addCategory: ", name)
-        let cat = new Category(name, null, 0); // TODO: replace null by actual 0 for level-0 (this should lead to the same result)
+        let cat = new Category(name, 0, 0); // TODO: replace null by actual 0 for level-0 (this should lead to the same result)
         this.categories[name] = cat;
         console.log("append html to CategoryList:", cat.getHTML())
         this._appendHTML(cat.getHTML());
