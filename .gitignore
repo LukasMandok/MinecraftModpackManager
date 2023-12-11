@@ -162,3 +162,7 @@ cython_debug/
 
 ### Project specific
 data/mods/download/*
+
+
+### Frontend compiled website
+src\gui\web
