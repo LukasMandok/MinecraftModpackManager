@@ -1,0 +1,48 @@
+{
+    "configurations": [
+        {
+            "name": "Python: Module",
+            "type": "python",
+            "request": "launch",
+            "module": "src",
+            "justMyCode": true,
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Python: Module + Webpage",
+            "type": "python",
+            "request": "launch",
+            "module": "src",
+            "justMyCode": true,
+            "console": "integratedTerminal",
+            "preLaunchTask": "npm: build - src/gui/vue"
+        },
+        {
+            "name": "NPM: Webpage",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": ["run-script", "build"],
+            "preLaunchTask": "npm: build - src/gui/vue",
+            "skipFiles": ["<node_internals>/**"],
+            "cwd": "${workspaceFolder}/src/gui/vue"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Build and Run",
+            "configurations": ["NPM: Webpage", "Python: Module + Webpage"]
+        }
+    ],
+    "tasks": [
+        {
+			"type": "npm",
+			"script": "build",
+			"path": "src/gui/vue",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "npm: build - src/gui/vue",
+			"detail": "vite build"
+        }
+    ]
+}

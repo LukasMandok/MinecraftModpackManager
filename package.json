@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "dayjs": "^1.11.10",
+    "universal-cookie": "^6.1.1"
+  }
+}
