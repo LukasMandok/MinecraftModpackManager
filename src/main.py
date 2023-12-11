@@ -24,6 +24,7 @@ def main():
     app.set_application_manager(manager)
 
     # Start the GUI
+    print("Executing run function of gui:")
     app.run()
 
 if __name__ == "__main__":
