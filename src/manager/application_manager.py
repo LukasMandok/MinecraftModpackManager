@@ -4,11 +4,11 @@ from ..models.constants import Sources
 
 import json
 from pprint import pprint
-import asyncio
+# import asyncio
 
 class ApplicationManager:
-    def __init__(self, app):
-        self.app = app
+    def __init__(self, backend):
+        self.backend = backend
         self.projectManager = project_manager.ProjectManager()
         self.apiManager = api_manager.ApiManager()
         # self.DatabaseManager = await database_manager.DatabaseManager()
@@ -40,4 +40,4 @@ class ApplicationManager:
         print("Downlaod List - Dict:")
         pprint(download_list.dict)
         
-        self.app.send_download_list(download_list.getList())
+        self.backend.send_download_list(download_list.getList())

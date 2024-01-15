@@ -1,6 +1,9 @@
 <template>
     some text before the wrapper
-    <DefaultWrapper>
+
+    <button @click="sendMessage">Send Message</button>
+
+    <!-- <DefaultWrapper>
         <template #main>
             SOme text for the main slog
             <HelloWorld msg="Hello Vue 3 + Vite" />
@@ -9,10 +12,28 @@
         some text inside the wrapper
         <TheWelcome />
 
-    </DefaultWrapper>
+    </DefaultWrapper> -->
 </template>
 
 <script setup>
+    // import websockethandler from @/helpers/websockets.js
+    import {onMounted} from 'vue'
+    import { WebSocketHandler } from './helpers/websockets';
+
+    let wsHandler = null
+
+    onMounted(() => {
+        wsHandler = new WebSocketHandler('', onMessage)
+    })
+
+    const sendMessage = () => {
+        wsHandler.send( {type: 'test', content: 'test'} )
+    }
+
+    const onMessage = (data) => {
+        console.log(data)
+    }
+
     // import HelloWorld from '@/components/HelloWorld.vue'
     // import DefaultWrapper from '@/components/layout/DefaultWrapper.vue'
 </script>

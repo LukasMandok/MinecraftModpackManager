@@ -78,8 +78,8 @@ class="gallery" :class="{ 'no-image': !featuredImage }" tabindex="-1"
 	// import Categories from '~/components/Categories.vue'
 	// import Avatar from '~/components/Avatar.vue'
 
-	import EditIcon from '~/assets/icons/updated.svg'
-	import DownloadIcon from '~/assets/icons/download.svg'
+	// import EditIcon from '~/assets/icons/updated.svg'
+	// import DownloadIcon from '~/assets/icons/download.svg'
 
 	const props = defineProps({
 		type: {

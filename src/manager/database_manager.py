@@ -1,6 +1,6 @@
 import json
 import os
-import asyncio
+# import asyncio
 
 from aiotinydb import AIOTinyDB
 from aiotinydb.storage import AIOJSONStorage

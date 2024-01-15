@@ -1,7 +1,7 @@
 # Import modules and packages:
 
 # modules
-from .gui import gui
+from .gui.backend import app
 from .manager import application_manager
 from . import utils
 from .config import config
@@ -16,16 +16,18 @@ def main():
     # Initializion code 
 
     # Create an instance of the GUI 
-    app = gui.Application()
+    backend = app.Backend()
 
     # Create an instance of the Application Manager
-    manager = application_manager.ApplicationManager(app)
+    manager = application_manager.ApplicationManager(backend)
 
-    app.set_application_manager(manager)
+    backend.set_application_manager(manager)
 
     # Start the GUI
     print("Executing run function of gui:")
-    app.run()
+    backend.init_routes()
+    backend.run()
+    # backend.test_websocket()
 
 if __name__ == "__main__":
     main()

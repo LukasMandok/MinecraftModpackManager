@@ -1,14 +1,22 @@
 {
 	"version": "2.0.0",
 	"tasks": [
-		{
-			"type": "npm",
-			"script": "build",
-			"path": "src/gui/vue",
-			"group": "build",
-			"problemMatcher": [],
-			"label": "npm: build - src/gui/vue",
-			"detail": "vite build"
-		}
-	]
+        {
+            "type": "npm",
+            "script": "build",
+            "path": "src/gui/vue",
+            "group": "build",
+            "problemMatcher": [],
+            "label": "npm: build - src/gui/vue",
+            "detail": "vite build"
+        },
+        {
+            "type": "npm",
+            "script": "dev",
+            "path": "src/gui/vue",
+            "problemMatcher": [],
+            "label": "npm: dev - src/gui/vue",
+            "detail": "vite dev"
+        }
+    ]
 }

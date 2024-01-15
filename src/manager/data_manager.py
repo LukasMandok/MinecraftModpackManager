@@ -1,6 +1,6 @@
 import json
 import os
-import asyncio
+import anyio
 
 from ..config import config
 
@@ -17,7 +17,7 @@ class DataManager:
         self.downloadList_folder = DownloadList()
         
         # create database manager asynccronously
-        asyncio.run(self._create_database_manager())
+        anyio.run(self._create_database_manager)
         
 
     async def _create_database_manager(self):

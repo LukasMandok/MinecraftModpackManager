@@ -6,7 +6,7 @@ import eslint from 'vite-plugin-eslint'
 import svgLoader from 'vite-svg-loader'
 
 import AutoImport from 'unplugin-auto-import/vite'
-import Components from 'unplugin-vue-components/vite'
+// import Components from 'unplugin-vue-components/vite'
 
 
 // import path from 'path'
@@ -14,12 +14,13 @@ import Components from 'unplugin-vue-components/vite'
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
     server: {
-        port: 8080,
+        host: 'localhost',
+        port: 8000,
         strictPort: true,
         // TODO: remove the proxy again for production
         proxy: mode === 'development' ? {
             '/api': {
-                target: 'http://localhost:8000', // was 8080 before
+                target: 'http://localhost:8080', // was 8080 before
                 // changeOrigin: true,
                 // secure: false,
                 rewrite: (path) => path.replace(/^\/api/, '')
@@ -62,17 +63,17 @@ export default defineConfig(({ mode }) => ({
                     // '@unhead/vue': [
                     //   'unheadVueComposablesImports',
                     // ],
-                    '@unhead/vue': ['useHead', 'useSeoMeta'],
+                    // '@unhead/vue': ['useHead', 'useSeoMeta'],
                     // this should already be taken care of by the dirs option
                     // './src/stores/tags': ['useTags'],
                     // './src/stores/cosmetics': ['useCosmetics'],
                     // './src/stores/config': ['useConfig'], 
                 },
             ],
-            dirs: [
-                "src/composables",
-                "src/stores",
-            ],
+            // dirs: [
+            //     "src/composables",
+            //     "src/stores",
+            // ],
             dts: false, // Disable auto ts support
             eslintrc: {
                 enabled: true, // Default `false`
@@ -81,12 +82,12 @@ export default defineConfig(({ mode }) => ({
             },
         }),
 
-        Components({
-            dirs: ["src/components", "src/assets/icons"],
-            extensions: ['vue'],
-            deep: true,
-            dts: false,
-        }),
+        // Components({
+        //     dirs: ["src/components", "src/assets/icons"],
+        //     extensions: ['vue'],
+        //     deep: true,
+        //     dts: false,
+        // }),
     ],
     resolve: {
         alias: {
@@ -95,7 +96,7 @@ export default defineConfig(({ mode }) => ({
         }
     },
     assetsSubDirectory: 'static',
-    base: './',
+    base: '/static/',
     build: {
         outDir: "../web",
         emptyOutDir: true

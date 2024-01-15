@@ -9,7 +9,7 @@
             "console": "integratedTerminal"
         },
         {
-            "name": "Python: Module + Webpage",
+            "name": "Python: Module + Build Webpage",
             "type": "python",
             "request": "launch",
             "module": "src",
@@ -18,7 +18,7 @@
             "preLaunchTask": "npm: build - src/gui/vue"
         },
         {
-            "name": "NPM: Webpage",
+            "name": "NPM: Build Webpage",
             "type": "node",
             "request": "launch",
             "runtimeExecutable": "npm",
@@ -26,12 +26,26 @@
             "preLaunchTask": "npm: build - src/gui/vue",
             "skipFiles": ["<node_internals>/**"],
             "cwd": "${workspaceFolder}/src/gui/vue"
-        }
+        },
+        {
+            "name": "NPM: Host Webpage",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": ["run-script", "dev"],
+            "preLaunchTask": "npm: dev - src/gui/vue",
+            "skipFiles": ["<node_internals>/**"],
+            "cwd": "${workspaceFolder}/src/gui/vue",
+        },
     ],
     "compounds": [
         {
             "name": "Build and Run",
-            "configurations": ["NPM: Webpage", "Python: Module + Webpage"]
+            "configurations": ["NPM: Build Webpage", "Python: Module + Build Webpage"]
+        },
+        {
+            "name": "Build and Host",
+            "configurations": ["NPM: Host Webpage", "Python: Module"]
         }
     ],
     "tasks": [
@@ -43,6 +57,18 @@
 			"problemMatcher": [],
 			"label": "npm: build - src/gui/vue",
 			"detail": "vite build"
+        },
+        {
+            "type": "npm",
+            "script": "dev",
+            "path": "src/gui/vue",
+            "problemMatcher": [],
+            "label": "npm: dev - src/gui/vue",
+            "detail": "vite dev",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            }
         }
     ]
 }
